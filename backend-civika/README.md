@@ -46,7 +46,7 @@ cd proyecto_estadias
 ### 2. Configurar Backend
 
 ```bash
-cd tlapalli-backend
+cd backend-civika
 npm install
 
 # Copiar variables de entorno y configurar
@@ -57,14 +57,14 @@ cp .env.example .env
 ### 3. Configurar Frontend
 
 ```bash
-cd tlapalli-frontend
+cd frontend-civika
 npm install
 ```
 
 ### 4. Base de datos
 
 ```bash
-cd tlapalli-backend
+cd backend-civika
 npx prisma generate
 npx prisma migrate dev
 npm run seed
@@ -74,11 +74,11 @@ npm run seed
 
 ```bash
 # Terminal 1: Backend
-cd tlapalli-backend
+cd backend-civika
 npm run start:dev
 
 # Terminal 2: Frontend
-cd tlapalli-frontend
+cd frontend-civika
 npm run dev
 ```
 
@@ -94,7 +94,7 @@ npm run dev
 ### Backend (Koyeb)
 
 ```bash
-cd tlapalli-backend
+cd backend-civika
 npm run build
 # Desplegar en Koyeb usando koyeb.yaml
 ```
@@ -111,7 +111,7 @@ CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
 ### Frontend (Vercel)
 
 ```bash
-cd tlapalli-frontend
+cd frontend-civika
 npm run build
 # Desplegar en Vercel conectando el repositorio
 ```
@@ -124,7 +124,7 @@ VITE_API_URL=https://tlapalli-backend.koyeb.app
 ## 🧪 Tests
 
 ```bash
-cd tlapalli-backend
+cd backend-civika
 npm run test        # Unit tests
 npm run test:e2e    # E2E tests
 npm run test:cov    # Coverage

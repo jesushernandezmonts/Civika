@@ -5,7 +5,7 @@ service:
   routes:
     - path: /
   source:
-    dir: tlapalli-backend
+    dir: backend-civika
   build:
     builder: buildpacks
   run:

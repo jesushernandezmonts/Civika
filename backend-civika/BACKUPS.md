@@ -18,7 +18,7 @@ Para ejecutar los scripts de respaldo y restauración se requiere:
 Para generar un respaldo comprimido de la base de datos de manera inmediata:
 
 ```bash
-cd tlapalli-backend
+cd backend-civika
 chmod +x scripts/backup.sh
 ./scripts/backup.sh
 ```
@@ -35,7 +35,7 @@ El script eliminará automáticamente cualquier archivo de respaldo en `./backup
 Para restaurar la base de datos desde un archivo `.sql.gz`:
 
 ```bash
-cd tlapalli-backend
+cd backend-civika
 chmod +x scripts/restore.sh
 ./scripts/restore.sh ./backups/tlapalli_backup_20260721_120000.sql.gz
 ```
@@ -55,7 +55,7 @@ Para programar un respaldo automático diario a las 3:00 AM en el servidor:
 
 2. Agregar la siguiente línea (ajustando la ruta absoluta del proyecto):
    ```cron
-   0 3 * * * /bin/bash /ruta/al/proyecto/tlapalli-backend/scripts/backup.sh >> /var/log/tlapalli_backup.log 2>&1
+   0 3 * * * /bin/bash /ruta/al/proyecto/backend-civika/scripts/backup.sh >> /var/log/tlapalli_backup.log 2>&1
    ```
 
 ---
