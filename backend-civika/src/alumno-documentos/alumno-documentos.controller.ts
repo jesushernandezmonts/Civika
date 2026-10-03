@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
-import { AlumnoJwtAuthGuard } from './auth/strategies/alumno-jwt-auth.guard';
+import { AlumnoJwtAuthGuard } from '../auth/strategies/alumno-jwt-auth.guard';
 import { AlumnoDocumentosService } from './alumno-documentos.service';
 
 @Controller('alumno-documentos')

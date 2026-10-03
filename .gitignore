@@ -26,8 +26,11 @@ logs/
 *.log
 npm-debug.log*
 
-# OS
+# OS & Temporary
 Thumbs.db
+tmp/
+uploads/
+*.tmp
 
 # Database
 *.db

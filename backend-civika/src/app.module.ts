@@ -19,7 +19,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { CommonModule } from './common/common.module';
 import { HealthController } from './health/health.controller';
-import { AlumnoDocumentosModule } from './alumno-documentos.module';
+import { AlumnoDocumentosModule } from './alumno-documentos/alumno-documentos.module';
 import { CivikaModule } from './civika/civika.module';
 
 @Module({

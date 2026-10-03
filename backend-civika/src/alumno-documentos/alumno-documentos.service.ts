@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from './prisma/prisma.service';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Express } from 'express';
 
 @Injectable()
