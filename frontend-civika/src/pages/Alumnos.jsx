@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import api from '../services/api';
 import Modal from '../components/Modal';
 import AlumnoForm from '../components/AlumnoForm';
@@ -423,7 +424,13 @@ function Alumnos() {
               </tr>
             ) : (
               paginatedAlumnos.map((a, index) => (
-                <tr key={a.id} className="hover:bg-slate-800/80 transition group">
+                <motion.tr
+                  key={a.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, delay: Math.min(index * 0.04, 0.3), ease: "easeOut" }}
+                  className="hover:bg-slate-800/80 transition-colors group"
+                >
                   <td data-label="Alumno">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400 font-bold">
@@ -551,7 +558,7 @@ function Alumnos() {
                       </button>
                     </div>
                   </td>
-                </tr>
+                </motion.tr>
               ))
             )}
           </tbody>

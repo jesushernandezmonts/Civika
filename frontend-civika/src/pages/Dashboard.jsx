@@ -358,49 +358,77 @@ function Dashboard() {
       
       {/* KPIs Financieros Colegio Cívika */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden group">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Recaudación Total</span>
-            <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400"><DollarSign size={18} /></div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.05 }}
+          whileHover={{ y: -5, scale: 1.02, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
+          className="bg-slate-900/90 hover:bg-slate-900 border border-emerald-500/30 hover:border-emerald-500/50 rounded-2xl p-5 shadow-xl hover:shadow-emerald-950/40 relative overflow-hidden group cursor-pointer transition-colors duration-300"
+        >
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-emerald-400/[0.08] to-transparent pointer-events-none" />
+          <div className="flex items-center justify-between text-slate-400 mb-2 relative z-10">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-300/80">Recaudación Total</span>
+            <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shadow-sm"><DollarSign size={18} /></div>
           </div>
-          <p className="text-2xl font-black text-white tracking-tight">
+          <p className="text-2xl font-black text-white tracking-tight relative z-10">
             ${Number(civikaStats.totalRecaudado || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
           </p>
-          <p className="text-[11px] text-emerald-400/80 mt-1 font-medium">Colegiaturas + Uniformes</p>
-        </div>
+          <p className="text-[11px] text-emerald-400/80 mt-1 font-medium relative z-10">Colegiaturas + Uniformes</p>
+        </motion.div>
 
-        <div className="bg-slate-900/90 border border-blue-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden group">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Colegiaturas</span>
-            <div className="p-2 rounded-xl bg-blue-500/20 text-blue-400"><Receipt size={18} /></div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.1 }}
+          whileHover={{ y: -5, scale: 1.02, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
+          className="bg-slate-900/90 hover:bg-slate-900 border border-blue-500/30 hover:border-blue-500/50 rounded-2xl p-5 shadow-xl hover:shadow-blue-950/40 relative overflow-hidden group cursor-pointer transition-colors duration-300"
+        >
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-blue-400/[0.08] to-transparent pointer-events-none" />
+          <div className="flex items-center justify-between text-slate-400 mb-2 relative z-10">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-300/80">Colegiaturas</span>
+            <div className="p-2 rounded-xl bg-blue-500/20 text-blue-400 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shadow-sm"><Receipt size={18} /></div>
           </div>
-          <p className="text-2xl font-black text-white tracking-tight">
+          <p className="text-2xl font-black text-white tracking-tight relative z-10">
             ${Number(civikaStats.totalColegiaturas || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
           </p>
-          <p className="text-[11px] text-blue-400/80 mt-1 font-medium">Cobros en ventanilla</p>
-        </div>
+          <p className="text-[11px] text-blue-400/80 mt-1 font-medium relative z-10">Cobros en ventanilla</p>
+        </motion.div>
 
-        <div className="bg-slate-900/90 border border-purple-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden group">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Venta de Uniformes</span>
-            <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400"><ShoppingBag size={18} /></div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.15 }}
+          whileHover={{ y: -5, scale: 1.02, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
+          className="bg-slate-900/90 hover:bg-slate-900 border border-purple-500/30 hover:border-purple-500/50 rounded-2xl p-5 shadow-xl hover:shadow-purple-950/40 relative overflow-hidden group cursor-pointer transition-colors duration-300"
+        >
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-purple-400/[0.08] to-transparent pointer-events-none" />
+          <div className="flex items-center justify-between text-slate-400 mb-2 relative z-10">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300/80">Venta de Uniformes</span>
+            <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shadow-sm"><ShoppingBag size={18} /></div>
           </div>
-          <p className="text-2xl font-black text-white tracking-tight">
+          <p className="text-2xl font-black text-white tracking-tight relative z-10">
             ${Number(civikaStats.totalUniformes || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
           </p>
-          <p className="text-[11px] text-purple-400/80 mt-1 font-medium">Prendas oficiales escolares</p>
-        </div>
+          <p className="text-[11px] text-purple-400/80 mt-1 font-medium relative z-10">Prendas oficiales escolares</p>
+        </motion.div>
 
-        <div className="bg-slate-900/90 border border-indigo-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden group">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Alumnos Activos</span>
-            <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-400"><GraduationCap size={18} /></div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.2 }}
+          whileHover={{ y: -5, scale: 1.02, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
+          className="bg-slate-900/90 hover:bg-slate-900 border border-indigo-500/30 hover:border-indigo-500/50 rounded-2xl p-5 shadow-xl hover:shadow-indigo-950/40 relative overflow-hidden group cursor-pointer transition-colors duration-300"
+        >
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-indigo-400/[0.08] to-transparent pointer-events-none" />
+          <div className="flex items-center justify-between text-slate-400 mb-2 relative z-10">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-300/80">Alumnos Activos</span>
+            <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-400 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shadow-sm"><GraduationCap size={18} /></div>
           </div>
-          <p className="text-2xl font-black text-white tracking-tight">
+          <p className="text-2xl font-black text-white tracking-tight relative z-10">
             {civikaStats.alumnosTotal || stats?.alumnosInscritos || 0}
           </p>
-          <p className="text-[11px] text-indigo-400/80 mt-1 font-medium">Secundaria & Preparatoria</p>
-        </div>
+          <p className="text-[11px] text-indigo-400/80 mt-1 font-medium relative z-10">Secundaria & Preparatoria</p>
+        </motion.div>
       </div>
 
 

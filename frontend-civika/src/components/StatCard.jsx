@@ -100,20 +100,23 @@ function StatCard({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      whileHover={{ scale: 1.03, y: -2 }}
+      whileHover={{ y: -5, scale: 1.02, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
       className={`
         relative overflow-hidden rounded-2xl p-5 border
         bg-gradient-to-br ${gradient}
         shadow-lg ${glow}
-        transition-all duration-300 cursor-default group
+        transition-colors duration-300 cursor-pointer group
       `}
     >
-      {/* Glow blob en hover */}
-      <div className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl bg-current pointer-events-none" style={{ color: 'inherit', opacity: 0 }} />
+      {/* Efecto Shimmer de luz que cruza la tarjeta en hover */}
+      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent pointer-events-none" />
 
-      <div className="flex items-start justify-between gap-3">
+      {/* Glow blob suave */}
+      <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-500 blur-2xl bg-current pointer-events-none" style={{ color: 'inherit' }} />
+
+      <div className="relative z-10 flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-black uppercase tracking-[0.15em] text-white/50 mb-2 truncate">
+          <p className="text-[11px] font-black uppercase tracking-[0.15em] text-white/50 mb-2 truncate group-hover:text-white/70 transition-colors">
             {label}
           </p>
           <p className="text-2xl font-black tracking-tight text-white leading-none">
@@ -121,7 +124,7 @@ function StatCard({
           </p>
         </div>
         {Icon && (
-          <div className={`p-2.5 rounded-xl ${iconBg} shrink-0`}>
+          <div className={`p-2.5 rounded-xl ${iconBg} shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shadow-sm`}>
             <Icon size={20} />
           </div>
         )}

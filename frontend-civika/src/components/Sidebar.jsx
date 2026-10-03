@@ -33,10 +33,10 @@ function Sidebar({ isOpen, onClose }) {
   const [photoError, setPhotoError] = useState(false);
   
   const linkClass = ({ isActive }) =>
-    `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 ${
+    `relative group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 ${
       isActive 
-        ? 'bg-gradient-to-r from-purple-600/40 to-blue-600/30 text-purple-300 border border-purple-500/40 shadow-[0_0_20px_rgba(147,51,234,0.25)]' 
-        : 'text-white/60 hover:bg-slate-800/80 hover:text-white'
+        ? 'bg-gradient-to-r from-purple-600/35 via-indigo-600/25 to-blue-600/15 text-white font-semibold border border-purple-500/40 shadow-[0_4px_20px_rgba(147,51,234,0.2)]' 
+        : 'text-white/60 hover:text-white hover:bg-white/[0.06] hover:translate-x-1.5'
     }`;
 
   return (
