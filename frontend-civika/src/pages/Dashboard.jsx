@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import api from '../services/api';
 import { motion } from 'framer-motion';
-import { Loader2, Plus, Trash2, Edit3, Clock, MapPin, Download, ChevronDown, ChevronLeft, ChevronRight, AlertTriangle, CalendarX, TrendingUp, TrendingDown, Minus, CheckCircle2, XCircle, Ban, ShoppingBag, Receipt, GraduationCap, DollarSign } from 'lucide-react';
+import { Loader2, Plus, Trash2, Edit3, Clock, MapPin, Download, ChevronDown, ChevronLeft, ChevronRight, AlertTriangle, CalendarX, TrendingUp, TrendingDown, Minus, CheckCircle2, XCircle, Ban, ShoppingBag, Receipt, GraduationCap, DollarSign, FileSpreadsheet } from 'lucide-react';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
+import DashboardCharts from '../components/DashboardCharts';
+import { exportToExcel } from '../utils/excelExporter';
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -132,6 +134,27 @@ function Dashboard() {
     };
     fetchStatsAndActividades();
   }, []);
+
+  const handleExportarBalanceExcel = () => {
+    const resumenData = [
+      { Concepto: 'Colegiaturas en Ventanilla', Importe: civikaStats.totalColegiaturas || 0, Categoria: 'Colegiaturas', Periodo: 'Ciclo 2026-2027' },
+      { Concepto: 'Venta de Uniformes Escolares', Importe: civikaStats.totalUniformes || 0, Categoria: 'Uniformes', Periodo: 'Ciclo 2026-2027' },
+      { Concepto: 'Total Recaudado en Caja', Importe: civikaStats.totalRecaudado || 0, Categoria: 'Total Ingresos', Periodo: 'Ciclo 2026-2027' },
+      { Concepto: 'Alumnos Inscritos y Activos', Importe: civikaStats.alumnosTotal || 0, Categoria: 'Población Escolar', Periodo: 'Secundaria & Preparatoria' },
+      { Concepto: 'Cortes de Caja Pendientes', Importe: civikaStats.cortesPendientes || 0, Categoria: 'Control Interno', Periodo: 'Día en curso' },
+    ];
+    exportToExcel({
+      data: resumenData,
+      fileName: 'Balance_Financiero_Colegio_Civika',
+      sheetName: 'Finanzas',
+      columnsMap: [
+        { key: 'Concepto', label: 'Concepto' },
+        { key: 'Categoria', label: 'Categoría' },
+        { key: 'Periodo', label: 'Periodo' },
+        { key: 'Importe', label: 'Monto / Cantidad', format: (val) => typeof val === 'number' && val > 50 ? `$${val.toLocaleString('es-MX', { minimumFractionDigits: 2 })}` : val },
+      ]
+    });
+  };
 
   const handleDayClick = (day) => {
     const clickedDate = new Date(currentYear, currentMonth, day);
@@ -345,15 +368,27 @@ function Dashboard() {
           <p className="text-xs text-slate-400">Resumen integral de colegiaturas, venta de uniformes y cortes de caja de secretaría.</p>
         </div>
 
-        {civikaStats.cortesPendientes > 0 && (
-          <Link
-            to="/cortes-direccion"
-            className="flex items-center gap-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold px-4 py-2.5 rounded-2xl shadow-lg shadow-amber-600/30 text-xs transition-all duration-200 animate-pulse"
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleExportarBalanceExcel}
+            className="flex items-center gap-2 bg-slate-800/90 hover:bg-slate-800 text-emerald-400 hover:text-emerald-300 font-bold px-4 py-2.5 rounded-2xl border border-emerald-500/30 text-xs shadow-md transition-colors cursor-pointer"
           >
-            <Receipt size={16} />
-            <span>{civikaStats.cortesPendientes} Corte{civikaStats.cortesPendientes > 1 ? 's' : ''} pendiente{civikaStats.cortesPendientes > 1 ? 's' : ''} de validar →</span>
-          </Link>
-        )}
+            <FileSpreadsheet size={16} />
+            <span>Exportar Balance a Excel</span>
+          </motion.button>
+
+          {civikaStats.cortesPendientes > 0 && (
+            <Link
+              to="/cortes-direccion"
+              className="flex items-center gap-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold px-4 py-2.5 rounded-2xl shadow-lg shadow-amber-600/30 text-xs transition-all duration-200 animate-pulse"
+            >
+              <Receipt size={16} />
+              <span>{civikaStats.cortesPendientes} Corte{civikaStats.cortesPendientes > 1 ? 's' : ''} pendiente{civikaStats.cortesPendientes > 1 ? 's' : ''} de validar →</span>
+            </Link>
+          )}
+        </div>
       </div>
       
       {/* KPIs Financieros Colegio Cívika */}
@@ -430,6 +465,9 @@ function Dashboard() {
           <p className="text-[11px] text-indigo-400/80 mt-1 font-medium relative z-10">Secundaria & Preparatoria</p>
         </motion.div>
       </div>
+
+      {/* Gráficas Interactivas: Tendencia de Cobranza & Rotación de Uniformes */}
+      <DashboardCharts civikaStats={civikaStats} />
 
 
       {/* Sección de Propuestas Pendientes de Profesores */}

@@ -5,7 +5,7 @@ import Modal from '../components/Modal';
 import AlumnoForm from '../components/AlumnoForm';
 import ConfirmModal from '../components/ConfirmModal';
 import AlumnoDetail from '../components/AlumnoDetail';
-import { Plus, Edit3, Trash2, Power, Eye, Filter, KeyRound, Mail, X, Loader2 } from 'lucide-react';
+import { Plus, Edit3, Trash2, Power, Eye, Filter, KeyRound, Mail, X, Loader2, FileSpreadsheet } from 'lucide-react';
 import Toast from '../components/Toast';
 import StatCard from '../components/StatCard';
 import SearchBar from '../components/SearchBar';
@@ -17,6 +17,7 @@ import { PageTransition } from '../components/PageTransition';
 import { SkeletonTable, SkeletonCardGrid } from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 import { MOCK_ALUMNOS, MOCK_TALLERES } from '../mock/mockData';
+import { exportToExcel } from '../utils/excelExporter';
 
 function Alumnos() {
   const [alumnos, setAlumnos] = useState([]);
@@ -283,6 +284,45 @@ function Alumnos() {
       .filter(Boolean)
       .join(', ');
 
+  const handleExportarExcel = () => {
+    if (filtered.length === 0) {
+      showToast('Sin datos para exportar', 'No hay alumnos en la vista actual.', 'error');
+      return;
+    }
+
+    const dataToExport = filtered.map((a) => {
+      const { estado } = getEstadoExpediente(a.id);
+      return {
+        matricula: a.matricula || `CIV-${a.id}`,
+        nombreCompleto: `${a.nombre} ${a.apellidoPaterno || ''} ${a.apellidoMaterno || ''}`.trim(),
+        telefono: a.telefono || 'Sin teléfono',
+        padecimientos: a.padecimientos || 'Ninguno reportado',
+        expediente: estado === 'completo' ? 'Completo' : estado === 'parcial' ? 'Incompleto' : 'Sin documentos',
+        estatus: a.estatusActivo ? 'Activo' : 'Inactivo',
+        talleres: getTalleresAlumno(a.id) || 'Ninguno'
+      };
+    });
+
+    const columns = [
+      { key: 'matricula', header: 'Matrícula' },
+      { key: 'nombreCompleto', header: 'Nombre Completo del Alumno' },
+      { key: 'telefono', header: 'Teléfono de Contacto' },
+      { key: 'padecimientos', header: 'Padecimientos / Alergias' },
+      { key: 'expediente', header: 'Estatus Expediente' },
+      { key: 'talleres', header: 'Talleres Asignados' },
+      { key: 'estatus', header: 'Estatus Escolar' }
+    ];
+
+    exportToExcel({
+      filename: `Civika-Directorio-Alumnos-${new Date().toISOString().slice(0, 10)}.xlsx`,
+      sheetName: 'Directorio Alumnos',
+      columns,
+      data: dataToExport
+    });
+
+    showToast('Archivo Excel descargado', `${filtered.length} alumnos exportados con éxito.`, 'success');
+  };
+
   return (
     <PageTransition className="space-y-8">
       <Toast toast={toast} onClose={() => setSuccessToast('')} />
@@ -388,13 +428,25 @@ function Alumnos() {
             {filtered.length} {filtered.length === 1 ? 'alumno' : 'alumnos'}
           </div>
         </div>
-        <button
-          onClick={handleNew}
-          className="w-full md:w-auto bg-pink-600 hover:bg-pink-700 text-white font-black uppercase tracking-wider text-xs px-6 py-3.5 rounded-2xl transition flex items-center justify-center gap-2 cursor-pointer shrink-0 ring-1 ring-pink-300/20"
-        >
-          <Plus size={16} />
-          Nuevo Alumno
-        </button>
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+          <button
+            type="button"
+            onClick={handleExportarExcel}
+            className="w-full sm:w-auto bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-500/30 font-black uppercase tracking-wider text-xs px-5 py-3.5 rounded-2xl transition flex items-center justify-center gap-2 cursor-pointer shrink-0 shadow-lg shadow-emerald-500/10"
+            title="Exportar directorio de alumnos a Excel"
+          >
+            <FileSpreadsheet size={16} className="text-emerald-400" />
+            Exportar Excel
+          </button>
+          <button
+            type="button"
+            onClick={handleNew}
+            className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white font-black uppercase tracking-wider text-xs px-6 py-3.5 rounded-2xl transition flex items-center justify-center gap-2 cursor-pointer shrink-0 ring-1 ring-pink-300/20"
+          >
+            <Plus size={16} />
+            Nuevo Alumno
+          </button>
+        </div>
       </div>
 
       <div className="responsive-table-container relative z-10 mt-2">
