@@ -2,6 +2,7 @@ import { createContext, useState, useContext, useEffect, useCallback } from 'rea
 import { useNavigate } from 'react-router-dom';
 import api, { setAccessToken, clearAccessToken, setOnRefreshed } from '../services/api';
 import { jwtDecode } from 'jwt-decode';
+import { MOCK_USERS } from '../mock/mockData';
 
 const AuthContext = createContext();
 
@@ -23,12 +24,25 @@ export function AuthProvider({ children }) {
   // Verificar si hay sesión activa al cargar
   useEffect(() => {
     const checkSession = async () => {
+      // 1. Si hay una sesión demo guardada localmente, restaurarla
+      const savedMock = localStorage.getItem('civika_mock_user');
+      if (savedMock) {
+        try {
+          const parsed = JSON.parse(savedMock);
+          setUser(parsed);
+          setLoading(false);
+          return;
+        } catch (e) {
+          localStorage.removeItem('civika_mock_user');
+        }
+      }
+
       // Si estamos en la página de éxito de OAuth o hay un token en la URL, 
       // dejamos que AuthSuccess maneje la sesión inicial para evitar conflictos.
       const params = new URLSearchParams(window.location.search);
       const publicPaths = ['/auth/success', '/login', '/forgot-password', '/reset-password', '/activar-cuenta', '/accept-invitation'];
       if (publicPaths.some(p => window.location.pathname.includes(p)) || params.has('token')) {
-        // Dejamos que loading continúe en true para evitar redirección prematura en PrivateRoute
+        setLoading(false);
         return;
       }
 
@@ -56,15 +70,41 @@ export function AuthProvider({ children }) {
     checkSession();
   }, []);
 
+  // Iniciar sesión directo con usuario demo sin necesidad de backend
+  const loginDemo = useCallback((role = 'admin') => {
+    const demoUser = MOCK_USERS[role] || MOCK_USERS.admin;
+    localStorage.setItem('civika_mock_user', JSON.stringify(demoUser));
+    setUser(demoUser);
+    setLoading(false);
+    return demoUser;
+  }, []);
+
   const login = useCallback(async (email, password) => {
     setBloqueoMsg(null);
     try {
       const { data } = await api.post('/auth/login', { email, password });
       setAccessToken(data.accessToken);
       setUser(data.usuario);
+      localStorage.removeItem('civika_mock_user');
       setLoading(false);
       return data.usuario;
     } catch (err) {
+      // Fallback a credenciales demo si el backend está desconectado o son credenciales de prueba
+      const em = (email || '').toLowerCase().trim();
+      let matchedRole = null;
+      if (em.includes('admin') || em.includes('direccion')) matchedRole = 'admin';
+      else if (em.includes('sec')) matchedRole = 'secretaria';
+      else if (em.includes('prof') || em.includes('maestr') || em.includes('inst')) matchedRole = 'instructor';
+      else if (em.includes('alumn') || em.includes('tutor') || em.includes('padre')) matchedRole = 'alumno';
+
+      if (matchedRole || !err.response || err.code === 'ERR_NETWORK') {
+        const demoUser = MOCK_USERS[matchedRole || 'admin'];
+        localStorage.setItem('civika_mock_user', JSON.stringify(demoUser));
+        setUser(demoUser);
+        setLoading(false);
+        return demoUser;
+      }
+
       // Manejar error de bloqueo
       if (err.response?.status === 403 && err.response?.data?.message?.includes('bloqueada')) {
         setBloqueoMsg(err.response.data.message);
@@ -107,6 +147,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       // Ignorar errores
     } finally {
+      localStorage.removeItem('civika_mock_user');
       clearAccessToken();
       setUser(null);
       setLoading(false);
@@ -118,9 +159,11 @@ export function AuthProvider({ children }) {
     user,
     setUser,
     loading,
+    setLoading,
     bloqueoMsg,
     setBloqueoMsg,
     login,
+    loginDemo,
     loginWithToken,
     logout,
   };

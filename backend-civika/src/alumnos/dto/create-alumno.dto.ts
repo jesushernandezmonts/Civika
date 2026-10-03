@@ -53,5 +53,25 @@ export class CreateAlumnoDto {
   @IsNumber()
   @Type(() => Number)
   anio?: number;
+
+  @IsOptional()
+  @IsString()
+  matricula?: string;
+
+  @IsOptional()
+  @IsString()
+  grado?: string;
+
+  @IsOptional()
+  @IsString()
+  nombreTutor?: string;
+
+  @IsOptional()
+  @IsString()
+  telefonoTutor?: string;
+
+  @IsOptional()
+  @IsString()
+  emailTutor?: string;
 }
 

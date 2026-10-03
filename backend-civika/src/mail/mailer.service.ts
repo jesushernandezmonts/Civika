@@ -58,7 +58,7 @@ export class MailerService {
   }
 
   async sendMail(to: string, subject: string, html: string) {
-    const from = this.configService.get<string>('SMTP_FROM') || 'TLAPALLI <jesushernandezmonts@gmail.com>';
+    const from = this.configService.get<string>('SMTP_FROM') || 'CIVIKA <jesushernandezmonts@gmail.com>';
 
     // A. Intentar envío directo con Gmail SMTP (Nodemailer)
     if (this.transporter) {
@@ -99,7 +99,7 @@ export class MailerService {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'TLAPALLI <onboarding@resend.dev>',
+            from: 'CIVIKA <onboarding@resend.dev>',
             to: [to],
             subject,
             html,
@@ -129,7 +129,7 @@ export class MailerService {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sender: { name: 'TLAPALLI', email: 'jesushernandezmonts@gmail.com' },
+            sender: { name: 'CIVIKA', email: 'jesushernandezmonts@gmail.com' },
             to: [{ email: to }],
             subject,
             htmlContent: html,
@@ -163,12 +163,12 @@ export class MailerService {
     const html = `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 0; border-radius: 16px; overflow: hidden; border: 1px solid #f3e8ff;">
         <div style="background: linear-gradient(135deg, #db2777, #9333ea); padding: 40px 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">TLAPALLI</h1>
-          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Centro Cultural Huamantla</p>
+          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">CIVIKA</h1>
+          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Sistema de Gestión Cultural</p>
         </div>
         <div style="padding: 40px 30px; background: #fefefe;">
           <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 16px;">Recuperación de Contraseña</h2>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">Has solicitado restablecer tu contraseña para <strong>TLAPALLI</strong>.</p>
+          <p style="color: #555; font-size: 15px; line-height: 1.6;">Has solicitado restablecer tu contraseña para <strong>CIVIKA</strong>.</p>
           <p style="color: #555; font-size: 15px; line-height: 1.6;">Haz clic en el siguiente botón para crear una nueva contraseña:</p>
           <div style="text-align: center; margin: 32px 0;">
             <a href="${resetUrl}" style="background: linear-gradient(135deg, #db2777, #9333ea); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block;">Restablecer Contraseña</a>
@@ -182,7 +182,7 @@ export class MailerService {
       </div>
     `;
 
-    await this.sendMail(email, 'Restablecer Contraseña - TLAPALLI', html);
+    await this.sendMail(email, 'Restablecer Contraseña - CIVIKA', html);
   }
 
   async sendActivationEmail(email: string, token: string, nombre: string, tallerNombre?: string) {
@@ -196,13 +196,13 @@ export class MailerService {
     const html = `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 0; border-radius: 16px; overflow: hidden; border: 1px solid #f3e8ff;">
         <div style="background: linear-gradient(135deg, #db2777, #9333ea); padding: 40px 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">TLAPALLI</h1>
-          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Centro Cultural Huamantla</p>
+          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">CIVIKA</h1>
+          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Sistema de Gestión Cultural</p>
         </div>
         <div style="padding: 40px 30px; background: #fefefe;">
           <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 16px;">¡Invitación de Profesor!</h2>
           <p style="color: #555; font-size: 15px; line-height: 1.6;">¡Hola, <strong>${nombre}</strong>!</p>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">El administrador de Tlapalli te ha invitado a unirte${tallerText}. Para acceder a tu cuenta, haz clic en el siguiente enlace e inicia sesión con tu cuenta de Google:</p>
+          <p style="color: #555; font-size: 15px; line-height: 1.6;">El administrador de Civika te ha invitado a unirte${tallerText}. Para acceder a tu cuenta, haz clic en el siguiente enlace e inicia sesión con tu cuenta de Google:</p>
           <div style="text-align: center; margin: 32px 0;">
             <a href="${activationUrl}" style="background: linear-gradient(135deg, #db2777, #9333ea); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block;">Aceptar Invitación y Vincular Google</a>
           </div>
@@ -219,7 +219,7 @@ export class MailerService {
       </div>
     `;
 
-    await this.sendMail(email, 'Invitación a unirte como Profesor - TLAPALLI', html);
+    await this.sendMail(email, 'Invitación a unirte como Profesor - CIVIKA', html);
   }
 
   async sendAlumnoActivationEmail(email: string, token: string, nombre: string) {
@@ -229,13 +229,13 @@ export class MailerService {
     const html = `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 0; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
         <div style="background: linear-gradient(135deg, #7c3aed, #4f46e5); padding: 40px 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">TLAPALLI</h1>
-          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Centro Cultural Huamantla</p>
+          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">CIVIKA</h1>
+          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Sistema de Gestión Cultural</p>
         </div>
         <div style="padding: 40px 30px; background: #fefefe;">
-          <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 16px;">¡Bienvenido a TLAPALLI!</h2>
+          <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 16px;">¡Bienvenido a CIVIKA!</h2>
           <p style="color: #555; font-size: 15px; line-height: 1.6;">¡Hola, <strong>${nombre}</strong>!</p>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">El administrador te ha registrado en el <strong>Portal del Alumno</strong> de TLAPALLI. Para acceder, crea tu contraseña haciendo clic en el siguiente botón:</p>
+          <p style="color: #555; font-size: 15px; line-height: 1.6;">El administrador te ha registrado en el <strong>Portal del Alumno</strong> de CIVIKA. Para acceder, crea tu contraseña haciendo clic en el siguiente botón:</p>
           <div style="text-align: center; margin: 32px 0;">
             <a href="${activationUrl}" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block;">Activar mi Cuenta</a>
           </div>
@@ -252,6 +252,6 @@ export class MailerService {
       </div>
     `;
 
-    await this.sendMail(email, 'Activa tu cuenta - Portal del Alumno TLAPALLI', html);
+    await this.sendMail(email, 'Activa tu cuenta - Portal del Alumno CIVIKA', html);
   }
 }

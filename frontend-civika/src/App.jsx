@@ -20,6 +20,12 @@ import ServicioSocial from './pages/ServicioSocial';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
 
+// Civika específicas
+import VentaUniformes from './pages/VentaUniformes';
+import CorteCaja from './pages/CorteCaja';
+import CortesDireccion from './pages/CortesDireccion';
+import AvisosEscolares from './pages/AvisosEscolares';
+
 // Alumno pages
 import AlumnoLogin from './pages/alumno/AlumnoLogin';
 import AlumnoDashboard from './pages/alumno/AlumnoDashboard';
@@ -32,7 +38,6 @@ import AlumnoActivarCuenta from './pages/alumno/AlumnoActivarCuenta';
 import AlumnoLayout from './pages/alumno/AlumnoLayout';
 import AlumnoPrivateRoute from './pages/alumno/AlumnoPrivateRoute';
 
-import Mapeo from './pages/Mapeo';
 import AdminAsistencias from './pages/AdminAsistencias';
 
 function App() {
@@ -46,17 +51,27 @@ function App() {
       <Route path="/accept-invitation" element={<AcceptInvitation />} />
       <Route path="/auth/success" element={<AuthSuccess />} />
 
-      {/* Rutas del ADMIN */}
+      {/* Rutas compartidas por ADMIN (Dirección) y SECRETARIA */}
+      <Route element={<PrivateRoute allowedRoles={['admin', 'secretaria']} />}>
+        <Route element={<Layout />}>
+          <Route path="/alumnos" element={<Alumnos />} />
+          <Route path="/pagos" element={<Pagos />} />
+          <Route path="/uniformes" element={<VentaUniformes />} />
+          <Route path="/corte-caja" element={<CorteCaja />} />
+          <Route path="/asistencia-admin" element={<AdminAsistencias />} />
+        </Route>
+      </Route>
+
+      {/* Rutas exclusivas de DIRECCIÓN GENERAL (ADMIN) */}
       <Route element={<PrivateRoute allowedRoles={['admin']} />}>
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/alumnos" element={<Alumnos />} />
+          <Route path="/cortes-direccion" element={<CortesDireccion />} />
+          <Route path="/avisos-escolares" element={<AvisosEscolares />} />
           <Route path="/instructores" element={<Instructores />} />
           <Route path="/talleres" element={<Talleres />} />
           <Route path="/inscripciones" element={<Inscripciones />} />
-          <Route path="/asistencia-admin" element={<AdminAsistencias />} />
           <Route path="/reportes" element={<Reportes />} />
-          <Route path="/mapeo" element={<Mapeo />} />
           <Route path="/servicio-social" element={<ServicioSocial />} />
           <Route path="/eventos" element={<EventosProfesor />} />
         </Route>
@@ -67,19 +82,18 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/mis-grupos" element={<MisGrupos />} />
           <Route path="/asistencia" element={<Asistencia />} />
-          <Route path="/pagos" element={<Pagos />} />
           <Route path="/mis-eventos" element={<EventosProfesor />} />
         </Route>
       </Route>
 
-      {/* Mi Perfil - accesible para ambos roles */}
-      <Route element={<PrivateRoute allowedRoles={['admin', 'profesor']} />}>
+      {/* Mi Perfil - accesible para todos los roles de personal */}
+      <Route element={<PrivateRoute allowedRoles={['admin', 'profesor', 'secretaria']} />}>
         <Route element={<Layout />}>
           <Route path="/mi-perfil" element={<MiPerfil />} />
         </Route>
       </Route>
 
-      {/* Rutas del ALUMNO */}
+      {/* Rutas del ALUMNO / TUTOR */}
       <Route path="/alumno/login" element={<AlumnoLogin />} />
       <Route path="/alumno/activar-cuenta" element={<AlumnoActivarCuenta />} />
       <Route element={<AlumnoPrivateRoute />}>

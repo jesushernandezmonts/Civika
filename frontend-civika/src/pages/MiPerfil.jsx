@@ -254,7 +254,7 @@ function MiPerfil() {
           transition={{ delay: 0.1 }}
           className="relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-slate-900/80 to-slate-800/40 shadow-2xl"
         >
-          <div className="h-1.5 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-cyan-500" />
+          <div className="h-1.5 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" />
           <div className="p-6 md:p-10">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
               {/* Avatar - clickeable with preview */}
@@ -265,7 +265,7 @@ function MiPerfil() {
                   className="block relative"
                   title="Cambiar foto de perfil"
                 >
-                  <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-pink-500 via-fuchsia-500 to-cyan-500 p-[3px] shadow-2xl shadow-pink-500/30 transition-all duration-300 group-hover:scale-105 group-hover:shadow-pink-500/50">
+                  <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 p-[3px] shadow-2xl shadow-purple-900/40 transition-all duration-300 group-hover:scale-105 group-hover:shadow-purple-800/50">
                     <div className="w-full h-full rounded-[calc(1rem-3px)] overflow-hidden bg-slate-900 flex items-center justify-center relative">
                       {fotoUrl ? (
                         <img
@@ -414,10 +414,10 @@ function MiPerfil() {
               animate={{ opacity: 1, scale: 1 }}
               className="relative w-full max-w-md rounded-3xl border border-white/15 bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl overflow-hidden"
             >
-              <div className="h-1 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-cyan-500" />
+              <div className="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" />
               <div className="p-6 md:p-8">
                 <h3 className="text-xl font-black text-white mb-6 flex items-center gap-3">
-                  <Lock size={20} className="text-pink-400" />
+                  <Lock size={20} className="text-purple-400" />
                   Cambiar Contraseña
                 </h3>
 
@@ -542,7 +542,7 @@ function MiPerfil() {
         transition={{ delay: 0.1 }}
         className="relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-slate-900/80 to-slate-800/40 shadow-2xl"
       >
-        <div className="h-1.5 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-cyan-500" />
+        <div className="h-1.5 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" />
         <div className="p-6 md:p-10">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             {/* Avatar - clickeable con preview (también para profesor) */}
@@ -553,7 +553,7 @@ function MiPerfil() {
                 className="block relative"
                 title="Cambiar foto de perfil"
               >
-                <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-pink-500 via-fuchsia-500 to-cyan-500 p-[3px] shadow-2xl shadow-pink-500/30 transition-all duration-300 group-hover:scale-105 group-hover:shadow-pink-500/50">
+                <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 p-[3px] shadow-2xl shadow-purple-900/40 transition-all duration-300 group-hover:scale-105 group-hover:shadow-purple-800/50">
                   <div className="w-full h-full rounded-[calc(1rem-3px)] overflow-hidden bg-slate-900 flex items-center justify-center relative">
                     {fotoUrl ? (
                       <img
@@ -736,10 +736,10 @@ function MiPerfil() {
             animate={{ opacity: 1, scale: 1 }}
             className="relative w-full max-w-md rounded-3xl border border-white/15 bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl overflow-hidden"
           >
-            <div className="h-1 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-cyan-500" />
+            <div className="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" />
             <div className="p-6 md:p-8">
               <h3 className="text-xl font-black text-white mb-6 flex items-center gap-3">
-                <Lock size={20} className="text-pink-400" />
+                <Lock size={20} className="text-purple-400" />
                 Cambiar Contraseña
               </h3>
               <form onSubmit={handleChangePassword} className="space-y-4">

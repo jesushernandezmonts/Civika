@@ -5,9 +5,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Usuario {
@@ -27,6 +26,10 @@ model Usuario {
   refreshTokens    RefreshToken[]
   creadoEn         DateTime       @default(now()) @map("creado_en")
   pagos            Pago[]
+  cortesCaja       CorteCaja[]    @relation("SecretariaCortes")
+  cortesConfirmados CorteCaja[]   @relation("DireccionCortes")
+  avisos           AvisoEscolar[]
+  ventasUniformes  VentaUniforme[]
 }
 
 model RefreshToken {
@@ -57,6 +60,12 @@ model Alumno {
   authActivo       Boolean       @default(false) @map("auth_activo")
   resetToken       String?       @unique @map("reset_token")
   resetTokenExp    DateTime?     @map("reset_token_exp")
+  // Datos escolares y tutor Colegio Cívika
+  matricula        String?       @unique
+  grado            String?       // Secundaria 1°, Secundaria 2°, etc.
+  nombreTutor      String?       @map("nombre_tutor")
+  telefonoTutor    String?       @map("telefono_tutor")
+  emailTutor       String?       @map("email_tutor")
   // Relaciones existentes
   inscripciones    Inscripcion[]
   pagos            Pago[]
@@ -65,6 +74,7 @@ model Alumno {
   // Nuevas relaciones
   servicioSocial   ServicioSocial[]
   alumnoRefreshTokens AlumnoRefreshToken[]
+  ventasUniformes  VentaUniforme[]
 }
 
 model Documento {
@@ -263,4 +273,66 @@ model JustificacionInstructor {
 
   @@index([instructorId])
 }
+
+// === MODELOS COLEGIO CÍVIKA ===
+
+model Uniforme {
+  id        Int      @id @default(autoincrement())
+  prenda    String   // Suéter, Falda, Pantalón, Playera polo, Pans deportivo
+  talla     String   // 12, 14, 16, CH, M, G, XL
+  precio    Decimal  @db.Decimal(10, 2)
+  stock     Int      @default(0)
+  activo    Boolean  @default(true)
+  creadoEn  DateTime @default(now()) @map("creado_en")
+}
+
+model VentaUniforme {
+  id            Int        @id @default(autoincrement())
+  folio         String     @unique
+  alumnoId      Int?       @map("alumno_id")
+  alumno        Alumno?    @relation(fields: [alumnoId], references: [id], onDelete: SetNull)
+  comprador     String     // Nombre del alumno o tutor
+  detalles      Json       // Array de items [{ prenda, talla, cantidad, precio, subtotal }]
+  total         Decimal    @db.Decimal(10, 2)
+  metodoPago    String     @default("efectivo") @map("metodo_pago") // efectivo, transferencia
+  fecha         DateTime   @default(now())
+  registradoPor Int?       @map("registrado_por")
+  usuario       Usuario?   @relation(fields: [registradoPor], references: [id])
+  corteCajaId   Int?       @map("corte_caja_id")
+  corteCaja     CorteCaja? @relation(fields: [corteCajaId], references: [id])
+}
+
+model CorteCaja {
+  id                 Int              @id @default(autoincrement())
+  folio              String           @unique
+  secretariaId       Int              @map("secretaria_id")
+  secretaria         Usuario          @relation("SecretariaCortes", fields: [secretariaId], references: [id])
+  fechaInicio        DateTime         @default(now()) @map("fecha_inicio")
+  fechaCorte         DateTime         @default(now()) @map("fecha_corte")
+  montoColegiaturas  Decimal          @default(0) @db.Decimal(10, 2) @map("monto_colegiaturas")
+  montoUniformes     Decimal          @default(0) @db.Decimal(10, 2) @map("monto_uniformes")
+  totalEfectivo      Decimal          @default(0) @db.Decimal(10, 2) @map("total_efectivo")
+  estatus            String           @default("pendiente_entrega") // pendiente_entrega, entregado_a_direccion, confirmado_por_direccion
+  fechaEntrega       DateTime?        @map("fecha_entrega")
+  fechaConfirmacion  DateTime?        @map("fecha_confirmacion")
+  observaciones      String?
+  confirmadoPorId    Int?             @map("confirmado_por_id")
+  confirmadoPor      Usuario?         @relation("DireccionCortes", fields: [confirmadoPorId], references: [id])
+  ventasUniformes    VentaUniforme[]
+  creadoEn           DateTime         @default(now()) @map("creado_en")
+}
+
+model AvisoEscolar {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  contenido   String
+  grado       String   @default("todos") // todos, secundaria, preparatoria, etc.
+  prioridad   String   @default("normal") // normal, urgente, importante
+  fecha       DateTime @default(now())
+  activo      Boolean  @default(true)
+  creadoPorId Int?     @map("creado_por_id")
+  creadoPor   Usuario? @relation(fields: [creadoPorId], references: [id])
+  creadoEn    DateTime @default(now()) @map("creado_en")
+}
+
 

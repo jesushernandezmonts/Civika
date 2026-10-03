@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import api from '../services/api';
 import { motion } from 'framer-motion';
-import { Loader2, Plus, Trash2, Edit3, Clock, MapPin, Download, ChevronDown, ChevronLeft, ChevronRight, AlertTriangle, CalendarX, TrendingUp, TrendingDown, Minus, CheckCircle2, XCircle, Ban } from 'lucide-react';
+import { Loader2, Plus, Trash2, Edit3, Clock, MapPin, Download, ChevronDown, ChevronLeft, ChevronRight, AlertTriangle, CalendarX, TrendingUp, TrendingDown, Minus, CheckCircle2, XCircle, Ban, ShoppingBag, Receipt, GraduationCap, DollarSign } from 'lucide-react';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
+  const [civikaStats, setCivikaStats] = useState({
+    alumnosTotal: 0,
+    totalColegiaturas: 0,
+    totalUniformes: 0,
+    totalRecaudado: 0,
+    cortesPendientes: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [actividades, setActividades] = useState([]);
 
@@ -102,13 +110,22 @@ function Dashboard() {
   useEffect(() => {
     const fetchStatsAndActividades = async () => {
       try {
-        const [{ data: statsData }] = await Promise.all([
-          api.get('/stats/dashboard'),
+        const [statsRes, civikaRes] = await Promise.all([
+          api.get('/stats/dashboard').catch(() => ({ data: null })),
+          api.get('/civika/stats/resumen').catch(() => ({ data: null })),
           fetchActividades(),
         ]);
-        setStats(statsData);
+        const statsData = statsRes?.data;
+        if (civikaRes?.data) {
+          setCivikaStats(civikaRes.data);
+        }
+        setStats({
+          alumnosActivos: statsData?.alumnosActivos ?? 0,
+          ingresosMes: statsData?.ingresosMes ?? 0,
+          inscripcionesNuevas: statsData?.inscripcionesNuevas ?? 0
+        });
       } catch (error) {
-        console.error('Error fetching dashboard data', error);
+        console.warn('Error fetching stats:', error);
       } finally {
         setLoading(false);
       }
@@ -318,32 +335,72 @@ function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Header principal con título */}
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-white/90">Dashboard</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-purple-900/40 via-slate-900/60 to-blue-900/30 p-6 rounded-3xl border border-purple-500/20 backdrop-blur-md">
+        <div>
+          <div className="flex items-center gap-2 text-purple-400 text-xs font-black uppercase tracking-wider mb-1">
+            <GraduationCap size={16} />
+            <span>Panel de Dirección General • Colegio Cívika</span>
+          </div>
+          <h1 className="text-2xl font-black text-white">Finanzas & Control Escolar</h1>
+          <p className="text-xs text-slate-400">Resumen integral de colegiaturas, venta de uniformes y cortes de caja de secretaría.</p>
+        </div>
+
+        {civikaStats.cortesPendientes > 0 && (
+          <Link
+            to="/cortes-direccion"
+            className="flex items-center gap-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold px-4 py-2.5 rounded-2xl shadow-lg shadow-amber-600/30 text-xs transition-all duration-200 animate-pulse"
+          >
+            <Receipt size={16} />
+            <span>{civikaStats.cortesPendientes} Corte{civikaStats.cortesPendientes > 1 ? 's' : ''} pendiente{civikaStats.cortesPendientes > 1 ? 's' : ''} de validar →</span>
+          </Link>
+        )}
       </div>
       
-      {/* KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <KpiCard 
-          title="Alumnos Activos" 
-          value={stats?.alumnosInscritos || 0} 
-          color="pink"
-        />
-        <KpiCard 
-          title="Ingresos del Mes" 
-          value={`$${Number(stats?.comparativas?.ingresosMes?.actual || 0).toLocaleString('es-MX')}`} 
-          color="emerald"
-          trend={stats?.comparativas?.ingresosMes}
-          trendLabel="vs mes pasado"
-          isCurrency
-        />
-        <KpiCard 
-          title="Inscripciones Nuevas" 
-          value={stats?.comparativas?.inscripcionesNuevas?.actual || 0} 
-          color="cyan"
-          trend={stats?.comparativas?.inscripcionesNuevas}
-          trendLabel="vs mes pasado"
-        />
+      {/* KPIs Financieros Colegio Cívika */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden group">
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider">Recaudación Total</span>
+            <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400"><DollarSign size={18} /></div>
+          </div>
+          <p className="text-2xl font-black text-white tracking-tight">
+            ${Number(civikaStats.totalRecaudado || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+          </p>
+          <p className="text-[11px] text-emerald-400/80 mt-1 font-medium">Colegiaturas + Uniformes</p>
+        </div>
+
+        <div className="bg-slate-900/90 border border-blue-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden group">
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider">Colegiaturas</span>
+            <div className="p-2 rounded-xl bg-blue-500/20 text-blue-400"><Receipt size={18} /></div>
+          </div>
+          <p className="text-2xl font-black text-white tracking-tight">
+            ${Number(civikaStats.totalColegiaturas || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+          </p>
+          <p className="text-[11px] text-blue-400/80 mt-1 font-medium">Cobros en ventanilla</p>
+        </div>
+
+        <div className="bg-slate-900/90 border border-purple-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden group">
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider">Venta de Uniformes</span>
+            <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400"><ShoppingBag size={18} /></div>
+          </div>
+          <p className="text-2xl font-black text-white tracking-tight">
+            ${Number(civikaStats.totalUniformes || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+          </p>
+          <p className="text-[11px] text-purple-400/80 mt-1 font-medium">Prendas oficiales escolares</p>
+        </div>
+
+        <div className="bg-slate-900/90 border border-indigo-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden group">
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider">Alumnos Activos</span>
+            <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-400"><GraduationCap size={18} /></div>
+          </div>
+          <p className="text-2xl font-black text-white tracking-tight">
+            {civikaStats.alumnosTotal || stats?.alumnosInscritos || 0}
+          </p>
+          <p className="text-[11px] text-indigo-400/80 mt-1 font-medium">Secundaria & Preparatoria</p>
+        </div>
       </div>
 
 
@@ -453,7 +510,7 @@ function Dashboard() {
               {(currentMonth !== today.getMonth() || currentYear !== today.getFullYear()) && (
                 <button
                   onClick={goToToday}
-                  className="ml-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 border border-pink-400/30 text-white text-[10px] font-black uppercase tracking-wider transition-all duration-200 shadow-lg shadow-pink-600/20"
+                  className="ml-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-400/30 text-white text-[10px] font-black uppercase tracking-wider transition-all duration-200 shadow-lg shadow-purple-600/20"
                   title="Ir al mes actual"
                 >
                   Hoy
@@ -510,7 +567,7 @@ function Dashboard() {
                   title={dayActividades.length > 0 ? dayActividades.map(a => `${a.titulo} — ${a.ubicacion}`).join('\n') : undefined}
                   className={`aspect-square rounded-xl md:rounded-2xl border-2 flex flex-col items-center justify-center relative transition-all duration-200 cursor-pointer pb-1 md:pb-2 select-none
                     ${isToday 
-                      ? 'bg-gradient-to-br from-pink-600 to-rose-700 border-pink-400 shadow-xl shadow-pink-600/30 scale-105 z-10' 
+                      ? 'bg-gradient-to-br from-purple-600 to-indigo-700 border-purple-400 shadow-xl shadow-purple-600/30 scale-105 z-10' 
                       : isSelected
                       ? 'bg-gradient-to-br from-slate-800 to-slate-700 border-white/40 shadow-lg shadow-white/10 scale-105 z-10'
                       : 'bg-slate-800/80 border-slate-800/80 hover:bg-slate-800/90 hover:border-white/25 hover:shadow-lg hover:shadow-black/20'}`}
@@ -518,7 +575,7 @@ function Dashboard() {
                   {/* Glow effect for today */}
                   {isToday && (
                     <>
-                      <div className="absolute inset-0 rounded-xl md:rounded-2xl bg-gradient-to-br from-pink-400/20 to-rose-600/20 animate-pulse" />
+                      <div className="absolute inset-0 rounded-xl md:rounded-2xl bg-gradient-to-br from-purple-400/20 to-indigo-600/20 animate-pulse" />
                       <span className="absolute -top-0.5 md:-top-1 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
                     </>
                   )}
@@ -868,12 +925,11 @@ function Dashboard() {
                   <div className="text-[7px] font-bold text-neutral-400 tracking-[0.2em] mt-0.5">2021 - 2027</div>
                 </div>
 
-                {/* Centro Cultural Metadata */}
+                {/* Colegio Cívika Metadata */}
                 <div className="text-right text-[10px] text-neutral-600 leading-normal font-sans">
-                  <p className="font-bold text-neutral-900 text-xs uppercase tracking-tight">Centro Cultural Huamantla</p>
-                  <p>Parque Juárez No.14</p>
-                  <p>Tel: 2 47 47 2 13 11</p>
-                  <p className="font-semibold text-[#801D38] mt-1">Área: Coordinación</p>
+                  <p className="font-bold text-neutral-900 text-xs uppercase tracking-tight">Colegio Cívika</p>
+                  <p>Secundaria & Preparatoria</p>
+                  <p className="font-semibold text-purple-700 mt-1">Área: Dirección General</p>
                 </div>
               </div>
 
@@ -885,20 +941,20 @@ function Dashboard() {
 
               {/* Recipient Block */}
               <div className="text-xs pt-4 font-sans">
-                <p className="font-black text-neutral-900 uppercase">C. COORDINADOR DEL CENTRO CULTURAL HUAMANTLA</p>
-                <p className="font-black text-[#801D38] tracking-[0.2em] mt-1">P R E S E N T E .</p>
+                <p className="font-black text-neutral-900 uppercase">DIRECCIÓN GENERAL - COLEGIO CÍVIKA</p>
+                <p className="font-black text-purple-700 tracking-[0.2em] mt-1">P R E S E N T E .</p>
               </div>
 
               {/* Body Intro */}
               <p className="text-xs text-neutral-700 leading-relaxed text-justify indent-8 pt-2 font-sans">
-                Por medio de la presente, se hace entrega del reporte oficial correspondiente a las actividades, talleres y eventos internos y externos programados en las distintas áreas de este Centro Cultural (Galería, Audioteca y Auditorio). A continuación se muestra la relación detallada de los registros actuales:
+                Por medio de la presente, se hace entrega del reporte oficial correspondiente a las actividades y eventos escolares programados en Colegio Cívika. A continuación se muestra la relación detallada de los registros actuales:
               </p>
 
               {/* Activities Table */}
               <div className="pt-4">
                 <table className="w-full text-left text-[10px] border-collapse border border-neutral-300 font-sans">
                   <thead>
-                    <tr className="bg-[#801D38] text-white font-bold uppercase tracking-wider text-[9px]">
+                    <tr className="bg-purple-700 text-white font-bold uppercase tracking-wider text-[9px]">
                       <th className="border border-neutral-300 p-2.5">Título</th>
                       <th className="border border-neutral-300 p-2.5">Fecha y Hora</th>
                       <th className="border border-neutral-300 p-2.5">Tipo</th>
@@ -930,7 +986,7 @@ function Dashboard() {
                                 {act.tipo}
                               </span>
                             </td>
-                            <td className="border border-neutral-300 p-2.5 uppercase font-bold text-[#801D38]">{act.ubicacion}</td>
+                            <td className="border border-neutral-300 p-2.5 uppercase font-bold text-purple-700">{act.ubicacion}</td>
                             <td className="border border-neutral-300 p-2.5 text-neutral-500 leading-normal max-w-xs">{act.descripcion || 'Sin descripción'}</td>
                           </tr>
                         );
@@ -944,22 +1000,20 @@ function Dashboard() {
               <div className="pt-16 text-center text-xs space-y-14 font-sans">
                 <p className="font-bold text-neutral-700 uppercase tracking-widest">A t e n t a m e n t e</p>
                 <div>
-                  <p className="font-bold text-neutral-950">Mtro. Manuel de la Vega Moreno</p>
-                  <p className="text-neutral-500">Coordinador de Centro Cultural Huamantla</p>
+                  <p className="font-bold text-neutral-950">Dirección General</p>
+                  <p className="text-neutral-500">Colegio Cívika — Secundaria & Preparatoria</p>
                 </div>
               </div>
             </div>
 
             {/* Footer Block */}
             <div className="border-t border-neutral-200 pt-6 flex justify-between items-center text-[8px] text-neutral-400 z-10 font-sans">
-              <p>c. c. p. Archivo / Centro Cultural Huamantla</p>
-              {/* SC Logo */}
+              <p>c. c. p. Archivo / Colegio Cívika</p>
               <div className="flex items-center gap-2 select-none">
                 <div className="text-left leading-none">
-                  <span className="font-black text-[12px] text-[#801D38] tracking-tighter">SC</span>
-                  <span className="text-[6px] font-bold block text-neutral-500 tracking-tight">SECRETARÍA DE CULTURA</span>
+                  <span className="font-black text-[12px] text-purple-700 tracking-tighter">CÍVIKA</span>
+                  <span className="text-[6px] font-bold block text-neutral-500 tracking-tight">SISTEMA DE GESTIÓN ESCOLAR</span>
                 </div>
-                <SvgFlowerEmblem className="w-5 h-5 text-[#801D38]" />
               </div>
             </div>
           </div>

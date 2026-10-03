@@ -59,20 +59,33 @@ function AlumnoDetail({ alumno, onClose }) {
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-600 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-pink-600/10 shrink-0 select-none">
             {initials}
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-xl font-extrabold text-white truncate drop-shadow-sm">
-              {alumno.nombre} {alumno.apellidoPaterno} {alumno.apellidoMaterno}
-            </h3>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-xl font-extrabold text-white truncate drop-shadow-sm">
+                {alumno.nombre} {alumno.apellidoPaterno} {alumno.apellidoMaterno}
+              </h3>
 
-            <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter border ${
-              alumno.estatusActivo
-                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
-            }`}>
-              {alumno.estatusActivo ? 'Activo' : 'Inactivo'}
-            </span>
+              <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter border ${
+                alumno.estatusActivo
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+              }`}>
+                {alumno.estatusActivo ? 'Activo' : 'Inactivo'}
+              </span>
+
+              {alumno.grado && (
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  {alumno.grado}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-3 mt-1 text-[10px] text-white/40 uppercase tracking-widest font-black">
+              <span>ID: #{alumno.displayId || alumno.id}</span>
+              {alumno.matricula && (
+                <span className="text-purple-400 font-bold">Matrícula: {alumno.matricula}</span>
+              )}
+            </div>
           </div>
-          <p className="text-[10px] text-white/40 uppercase tracking-widest font-black mt-1">ID del Estudiante: #{alumno.displayId || alumno.id}</p>
         </div>
 
         {/* Pestañas de Navegación */}
@@ -142,6 +155,22 @@ function AlumnoDetail({ alumno, onClose }) {
                     <span className="text-sm text-white/80 font-medium">{alumno.padecimientos || <span className="opacity-40 italic">Ninguno</span>}</span>
                   </div>
                 </div>
+
+                {/* Tutor Responsable */}
+                {(alumno.nombreTutor || alumno.telefonoTutor || alumno.emailTutor) && (
+                  <div className="pt-2 border-t border-white/10 space-y-2">
+                    <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider block">Padre de Familia / Tutor</span>
+                    {alumno.nombreTutor && (
+                      <p className="text-xs text-white/90 font-medium">Nombre: <span className="text-white font-bold">{alumno.nombreTutor}</span></p>
+                    )}
+                    {alumno.telefonoTutor && (
+                      <p className="text-xs text-white/70">Teléfono: <span className="text-white">{alumno.telefonoTutor}</span></p>
+                    )}
+                    {alumno.emailTutor && (
+                      <p className="text-xs text-white/70">Email: <span className="text-purple-300">{alumno.emailTutor}</span></p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

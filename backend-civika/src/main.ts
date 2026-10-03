@@ -68,16 +68,26 @@ async function bootstrap() {
     rateLimit({
       windowMs: 60 * 1000, // 1 minuto
       max: 100,
+      standardHeaders: true,
+      legacyHeaders: false,
       message: { message: 'Demasiadas peticiones, intente de nuevo en un minuto' },
     }),
   );
 
-  // Rate limiting específico para login (5 intentos por minuto)
-  app.use('/auth/login', rateLimit({
+  // Rate limiting estricto para autenticación y recuperación de credenciales (5 intentos por minuto)
+  const authLimiter = rateLimit({
     windowMs: 60 * 1000,
     max: 5,
-    message: { message: 'Demasiados intentos de login, intente de nuevo en un minuto' },
-  }));
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: 'Demasiados intentos de acceso o verificación. Por seguridad, intente de nuevo en un minuto.' },
+  });
+
+  app.use('/auth/login', authLimiter);
+  app.use('/auth/alumno/login', authLimiter);
+  app.use('/auth/forgot-password', authLimiter);
+  app.use('/auth/reset-password', authLimiter);
+  app.use('/auth/alumno/activar-cuenta', authLimiter);
 
   // ===== CONFIGURACIÓN GENERAL =====
   // Cookie parser
@@ -86,19 +96,30 @@ async function bootstrap() {
   // Trust proxy para que Koyeb/Render/reverse proxies funcionen con rate limiting
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
-  // CORS
+  // CORS endurecido con validación estricta de origen
   const allowedOrigins = [
     process.env.FRONTEND_URL,
-    'https://tlapalli.vercel.app',
+    'https://civika.vercel.app',
     'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:4173',
   ].filter(Boolean) as string[];
 
   app.enableCors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some(o => origin.startsWith(o))) {
+      // Permitir peticiones sin origin (como apps móviles, tools internas o SSR)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const isAllowed = allowedOrigins.some(allowed =>
+        origin === allowed || origin.endsWith('.vercel.app') || origin.endsWith('.civika.edu.mx')
+      );
+
+      if (isAllowed || process.env.NODE_ENV !== 'production') {
         callback(null, true);
       } else {
-        callback(null, true); // Permitir orígenes para evitar bloqueos por variaciones de subdominio
+        callback(new Error(`Bloqueado por política CORS: origen '${origin}' no autorizado`));
       }
     },
     credentials: true,
@@ -116,8 +137,8 @@ async function bootstrap() {
 
   // ===== SWAGGER =====
   const config = new DocumentBuilder()
-    .setTitle('TLAPALLI API')
-    .setDescription('API para gestión de centro cultural Tlapalli - Huamantla')
+    .setTitle('CIVIKA API')
+    .setDescription('API para gestión de centro cultural Civika')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

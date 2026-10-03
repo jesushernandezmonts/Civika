@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, AlertCircle, UserCheck, Lock, Eye, EyeOff, CheckCircle2, Info, Bookmark } from 'lucide-react';
 import api from '../services/api';
 import InstallPwaModal from '../components/InstallPwaModal';
+import { APP_CONFIG } from '../config/appConfig';
 
 const GoogleIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24">
@@ -93,12 +94,19 @@ function AcceptInvitation() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden font-['Outfit']">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-900/60 via-purple-900/60 to-orange-900/60 z-10" />
+      {/* Fondo Abstracto Moderno Tech - Colegio Cívika */}
+      <div className="absolute inset-0 z-0 bg-slate-950">
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/30 rounded-full filter blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-600/25 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/20 rounded-full filter blur-[140px]" />
         <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/huamantla-bg.jpg')" }}
+          className="absolute inset-0 opacity-[0.18]"
+          style={{ 
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(168, 85, 247, 0.4) 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }} 
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />
       </div>
 
       <motion.div
@@ -181,26 +189,26 @@ function AcceptInvitation() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                  className="w-20 h-20 mb-4 rounded-3xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center border border-white/20"
+                  className="w-20 h-20 mb-4 rounded-3xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center border border-white/20"
                 >
-                  <UserCheck className="w-10 h-10 text-pink-400" />
+                  <UserCheck className="w-10 h-10 text-purple-400" />
                 </motion.div>
                 <h1 className="text-3xl font-black text-white mb-2 tracking-tight">¡Hola, {profesor?.nombre}!</h1>
                 <p className="text-white/60 text-sm">
-                  Has sido invitado a unirte a <strong>Tlapalli</strong> como Profesor.
+                  Has sido invitado a unirte a <strong>{APP_CONFIG.appName}</strong> como Profesor.
                 </p>
               </div>
 
               {/* Email registrado */}
               <div className="bg-slate-900/80 rounded-xl p-3 border border-white/15 text-center mb-6">
                 <span className="text-xs text-white/40 block mb-1">Correo registrado:</span>
-                <span className="text-sm font-semibold text-pink-300">{profesor?.email}</span>
+                <span className="text-sm font-semibold text-purple-300">{profesor?.email}</span>
               </div>
 
               {/* Requisitos de la contraseña */}
               <div className="bg-slate-900/50 rounded-2xl p-3.5 border border-white/10 mb-5">
                 <div className="flex items-start gap-2">
-                  <Info className="w-4 h-4 text-pink-400 mt-0.5 flex-shrink-0" />
+                  <Info className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
                   <div className="text-xs text-white/60 space-y-1">
                     <p className="font-semibold text-white/80">Requisitos para tu contraseña:</p>
                     <ul className="space-y-0.5 ml-2">
@@ -315,7 +323,7 @@ function AcceptInvitation() {
           transition={{ delay: 1 }}
           className="text-center text-white/40 mt-8 text-sm"
         >
-          © 2026 Tlapalli. Todos los derechos reservados.
+          {APP_CONFIG.copyright}
         </motion.p>
       </motion.div>
     </div>

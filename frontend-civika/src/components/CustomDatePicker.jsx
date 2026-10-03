@@ -123,14 +123,14 @@ export default function CustomDatePicker({ value, onChange, disabled = false }) 
                     onClick={() => selectDate(day)}
                     className={`aspect-square rounded-lg flex items-center justify-center text-[11px] font-bold transition-all duration-150 relative
                       ${isSelected
-                        ? 'bg-gradient-to-br from-pink-600 to-rose-600 text-white shadow-lg shadow-pink-600/30'
+                        ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-600/30'
                         : isToday
-                        ? 'bg-slate-800/90 text-white border border-pink-500/40'
+                        ? 'bg-slate-800/90 text-white border border-purple-500/40'
                         : 'text-white/60 hover:bg-slate-800/90 hover:text-white'}
                     `}
                   >
                     {isToday && !isSelected && (
-                      <span className="absolute -top-0.5 -right-0.5 w-1 h-1 rounded-full bg-pink-400" />
+                      <span className="absolute -top-0.5 -right-0.5 w-1 h-1 rounded-full bg-purple-400" />
                     )}
                     {day}
                   </motion.button>

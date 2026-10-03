@@ -146,7 +146,7 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
             placeholder="Ej. Juan García"
             value={form.nombre}
             onChange={handleChange}
-            className="bg-slate-800/90 border border-white/20 rounded-xl px-3 w-full text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 text-sm h-11"
+            className="bg-slate-800/90 border border-white/20 rounded-xl px-3 w-full text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 text-sm h-11"
             required
           />
         </div>
@@ -159,7 +159,7 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
               placeholder="profesor@gmail.com"
               value={form.email}
               onChange={handleChange}
-              className="bg-slate-800/90 border border-white/20 rounded-xl px-3 w-full text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 disabled:opacity-50 text-sm h-11"
+              className="bg-slate-800/90 border border-white/20 rounded-xl px-3 w-full text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 disabled:opacity-50 text-sm h-11"
               required
               disabled={!!instructor && !isEmailUnlocked}
             />
@@ -202,7 +202,7 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
             placeholder="Ej. 5512345678"
             value={form.telefono}
             onChange={handleChange}
-            className="bg-slate-800/90 border border-white/20 rounded-xl px-3 w-full text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 text-sm h-11"
+            className="bg-slate-800/90 border border-white/20 rounded-xl px-3 w-full text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 text-sm h-11"
           />
         </div>
       </div>
@@ -216,12 +216,12 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
               onClick={() => setForm({ ...form, tallerId: '' })}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer transition border ${
                 !form.tallerId 
-                  ? 'bg-pink-500/20 text-pink-300 border-pink-500/30' 
+                  ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' 
                   : 'text-white/70 hover:bg-slate-800/80 border-transparent'
               }`}
             >
               <div className={`w-4 h-4 rounded border flex items-center justify-center transition shrink-0 ${
-                !form.tallerId ? 'bg-pink-500 border-pink-500' : 'border-white/30'
+                !form.tallerId ? 'bg-purple-500 border-purple-500' : 'border-white/30'
               }`}>
                 {!form.tallerId && <Check size={11} className="text-white" />}
               </div>
@@ -237,12 +237,12 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
                   onClick={() => setForm({ ...form, tallerId: String(taller.id) })}
                   className={`flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer transition border ${
                     isSelected 
-                      ? 'bg-pink-500/20 text-pink-300 border-pink-500/30' 
+                      ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' 
                       : 'text-white/70 hover:bg-slate-800/80 border-transparent'
                   }`}
                 >
                   <div className={`w-4 h-4 rounded border flex items-center justify-center transition shrink-0 ${
-                    isSelected ? 'bg-pink-500 border-pink-500' : 'border-white/30'
+                    isSelected ? 'bg-purple-500 border-purple-500' : 'border-white/30'
                   }`}>
                     {isSelected && <Check size={11} className="text-white" />}
                   </div>
@@ -286,17 +286,17 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
               onClick={() => setGestionaAlumnos(true)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition border ${
                 gestionaAlumnos
-                  ? 'bg-pink-500/20 text-pink-300 border-pink-500/30'
+                  ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
                   : 'text-white/70 hover:bg-slate-800/80 border-transparent'
               }`}
             >
               <div className={`w-4 h-4 rounded border flex items-center justify-center transition shrink-0 ${
-                gestionaAlumnos ? 'bg-pink-500 border-pink-500' : 'border-white/30'
+                gestionaAlumnos ? 'bg-purple-500 border-purple-500' : 'border-white/30'
               }`}>
                 {gestionaAlumnos && <Check size={11} className="text-white" />}
               </div>
               <div className="flex items-center gap-2">
-                <UserPlus size={15} className={gestionaAlumnos ? 'text-pink-400' : 'text-white/40'} />
+                <UserPlus size={15} className={gestionaAlumnos ? 'text-purple-400' : 'text-white/40'} />
                 <div>
                   <p className="text-xs font-bold">El profe los agrega</p>
                   <p className="text-[10px] text-white/40">Se inscriben a su taller</p>
@@ -315,20 +315,20 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
       {/* Sección de Documentación */}
       <div className="border-t border-white/15 pt-4">
         <h4 className="text-sm font-bold text-white mb-3 tracking-wide flex items-center gap-2">
-          <FileText size={16} className="text-pink-400" />
+          <FileText size={16} className="text-purple-400" />
           Documentación del Instructor
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           
           {/* Currículum Vitae (CV) */}
           <div className="bg-slate-800/80 border border-white/15 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden group">
-            <div className="absolute -right-6 -top-6 w-16 h-16 bg-pink-500/5 rounded-full blur-xl group-hover:bg-pink-500/10 transition-all" />
+            <div className="absolute -right-6 -top-6 w-16 h-16 bg-purple-500/5 rounded-full blur-xl group-hover:bg-purple-500/10 transition-all" />
             <label className="text-xs font-black uppercase tracking-widest text-white/50">Currículum Vitae (CV)</label>
             
             {curriculumUrl ? (
               <div className="flex items-center justify-between bg-slate-900/80 border border-white/15 rounded-xl p-3">
                 <div className="flex items-center gap-2.5 overflow-hidden">
-                  <FileText size={20} className="text-pink-400 shrink-0" />
+                  <FileText size={20} className="text-purple-400 shrink-0" />
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-white/90 truncate">Currículum cargado</p>
                     <button
@@ -337,7 +337,7 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
                         url: curriculumUrl,
                         title: `CV - ${form.nombre}`
                       })}
-                      className="text-[10px] font-semibold text-pink-400 hover:text-pink-300 transition flex items-center gap-1 mt-0.5 cursor-pointer text-left"
+                      className="text-[10px] font-semibold text-purple-400 hover:text-purple-300 transition flex items-center gap-1 mt-0.5 cursor-pointer text-left"
                     >
                       Ver archivo <ExternalLink size={10} />
                     </button>
@@ -353,9 +353,9 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
                 </button>
               </div>
             ) : cvFile ? (
-              <div className="flex items-center justify-between bg-pink-500/5 border border-pink-500/20 rounded-xl p-3">
+              <div className="flex items-center justify-between bg-purple-500/5 border border-purple-500/20 rounded-xl p-3">
                 <div className="flex items-center gap-2.5 overflow-hidden">
-                  <FileText size={20} className="text-pink-400 shrink-0" />
+                  <FileText size={20} className="text-purple-400 shrink-0" />
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-white truncate">{cvFile.name}</p>
                     <p className="text-[10px] text-white/40">{(cvFile.size / 1024 / 1024).toFixed(2)} MB - Listo</p>
@@ -370,8 +370,8 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
                 </button>
               </div>
             ) : (
-              <label className="border-2 border-dashed border-white/15 hover:border-pink-500/40 rounded-xl p-5 flex flex-col items-center justify-center gap-2 cursor-pointer bg-black/10 hover:bg-pink-500/5 transition duration-300">
-                <Upload size={20} className="text-white/40 group-hover:text-pink-400 transition" />
+              <label className="border-2 border-dashed border-white/15 hover:border-purple-500/40 rounded-xl p-5 flex flex-col items-center justify-center gap-2 cursor-pointer bg-black/10 hover:bg-purple-500/5 transition duration-300">
+                <Upload size={20} className="text-white/40 group-hover:text-purple-400 transition" />
                 <span className="text-[11px] font-bold text-white/70">Seleccionar PDF del CV</span>
                 <span className="text-[9px] text-white/40">Máximo 5MB (PDF)</span>
                 <input
@@ -389,13 +389,13 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
 
           {/* Temario (Syllabus) */}
           <div className="bg-slate-800/80 border border-white/15 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden group">
-            <div className="absolute -right-6 -top-6 w-16 h-16 bg-pink-500/5 rounded-full blur-xl group-hover:bg-pink-500/10 transition-all" />
+            <div className="absolute -right-6 -top-6 w-16 h-16 bg-purple-500/5 rounded-full blur-xl group-hover:bg-purple-500/10 transition-all" />
             <label className="text-xs font-black uppercase tracking-widest text-white/50">Temario (Syllabus)</label>
             
             {temarioUrl ? (
               <div className="flex items-center justify-between bg-slate-900/80 border border-white/15 rounded-xl p-3">
                 <div className="flex items-center gap-2.5 overflow-hidden">
-                  <FileText size={20} className="text-pink-400 shrink-0" />
+                  <FileText size={20} className="text-purple-400 shrink-0" />
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-white/90 truncate">Temario cargado</p>
                     <button
@@ -404,7 +404,7 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
                         url: temarioUrl,
                         title: `Temario - ${form.nombre}`
                       })}
-                      className="text-[10px] font-semibold text-pink-400 hover:text-pink-300 transition flex items-center gap-1 mt-0.5 cursor-pointer text-left"
+                      className="text-[10px] font-semibold text-purple-400 hover:text-purple-300 transition flex items-center gap-1 mt-0.5 cursor-pointer text-left"
                     >
                       Ver archivo <ExternalLink size={10} />
                     </button>
@@ -420,9 +420,9 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
                 </button>
               </div>
             ) : temarioFile ? (
-              <div className="flex items-center justify-between bg-pink-500/5 border border-pink-500/20 rounded-xl p-3">
+              <div className="flex items-center justify-between bg-purple-500/5 border border-purple-500/20 rounded-xl p-3">
                 <div className="flex items-center gap-2.5 overflow-hidden">
-                  <FileText size={20} className="text-pink-400 shrink-0" />
+                  <FileText size={20} className="text-purple-400 shrink-0" />
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-white truncate">{temarioFile.name}</p>
                     <p className="text-[10px] text-white/40">{(temarioFile.size / 1024 / 1024).toFixed(2)} MB - Listo</p>
@@ -437,8 +437,8 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
                 </button>
               </div>
             ) : (
-              <label className="border-2 border-dashed border-white/15 hover:border-pink-500/40 rounded-xl p-5 flex flex-col items-center justify-center gap-2 cursor-pointer bg-black/10 hover:bg-pink-500/5 transition duration-300">
-                <Upload size={20} className="text-white/40 group-hover:text-pink-400 transition" />
+              <label className="border-2 border-dashed border-white/15 hover:border-purple-500/40 rounded-xl p-5 flex flex-col items-center justify-center gap-2 cursor-pointer bg-black/10 hover:bg-purple-500/5 transition duration-300">
+                <Upload size={20} className="text-white/40 group-hover:text-purple-400 transition" />
                 <span className="text-[11px] font-bold text-white/70">Seleccionar PDF del temario</span>
                 <span className="text-[9px] text-white/40">Máximo 5MB (PDF)</span>
                 <input
@@ -499,7 +499,7 @@ function InstructorForm({ instructor, talleres, onClose, onSave }) {
         <button
           type="submit"
           disabled={saving}
-          className="px-6 py-2 bg-pink-600 hover:bg-pink-700 rounded-xl font-bold text-white transition shadow-lg shadow-pink-600/20 flex items-center gap-2 disabled:opacity-50"
+          className="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-xl font-bold text-white transition shadow-lg shadow-purple-600/20 flex items-center gap-2 disabled:opacity-50"
         >
           {saving ? (
             <span className="flex items-center gap-2">

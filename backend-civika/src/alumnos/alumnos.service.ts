@@ -32,6 +32,11 @@ export class AlumnosService {
         barrioComunidad: true,
         email: true,
         fotoUrl: true,
+        matricula: true,
+        grado: true,
+        nombreTutor: true,
+        telefonoTutor: true,
+        emailTutor: true,
       },
     });
     if (!alumno) throw new NotFoundException('Alumno no encontrado');

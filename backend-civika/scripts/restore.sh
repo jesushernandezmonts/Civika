@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # ==============================================================================
-# Script de Restauración de Base de Datos - TLAPALLI (PostgreSQL)
+# Script de Restauración de Base de Datos - CIVIKA (PostgreSQL)
 # ==============================================================================
 
 if [ -z "$1" ]; then
   echo "❌ Uso: ./restore.sh <ruta-al-archivo-backup.sql.gz>"
-  echo "Ejemplo: ./restore.sh ./backups/tlapalli_backup_20260721_120000.sql.gz"
+  echo "Ejemplo: ./restore.sh ./backups/civika_backup_20260721_120000.sql.gz"
   exit 1
 fi
 

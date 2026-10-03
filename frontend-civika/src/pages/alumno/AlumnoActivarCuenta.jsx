@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
 import { Eye, EyeOff, Loader2, CheckCircle2, AlertCircle, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { APP_CONFIG } from '../../config/appConfig';
 
 function AlumnoActivarCuenta() {
   const [searchParams] = useSearchParams();
@@ -66,12 +67,18 @@ function AlumnoActivarCuenta() {
   if (!token) {
     return (
       <div className="min-h-screen relative flex items-center justify-center overflow-hidden font-['Outfit']">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-pink-900/60 via-purple-900/60 to-orange-900/60 z-10" />
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url('/huamantla-bg.jpg')" }}
+        <div className="absolute inset-0 z-0 bg-slate-950">
+          <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/30 rounded-full filter blur-[120px] animate-pulse" />
+          <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-600/25 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/20 rounded-full filter blur-[140px]" />
+          <div 
+            className="absolute inset-0 opacity-[0.18]"
+            style={{ 
+              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(168, 85, 247, 0.4) 1px, transparent 0)`,
+              backgroundSize: '32px 32px'
+            }} 
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />
         </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -101,16 +108,19 @@ function AlumnoActivarCuenta() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden font-['Outfit']">
-      {/* Fondo con imagen + gradiente violeta (igual que Login pero en tono alumno) */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-900/60 via-purple-900/60 to-orange-900/60 z-10" />
-        <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 10, repeat: Infinity, repeatType: 'reverse' }}
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/huamantla-bg.jpg')" }}
+      {/* Fondo Abstracto Moderno Tech - Colegio Cívika */}
+      <div className="absolute inset-0 z-0 bg-slate-950">
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/30 rounded-full filter blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-600/25 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/20 rounded-full filter blur-[140px]" />
+        <div 
+          className="absolute inset-0 opacity-[0.18]"
+          style={{ 
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(168, 85, 247, 0.4) 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }} 
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />
       </div>
 
       <motion.div
@@ -126,14 +136,14 @@ function AlumnoActivarCuenta() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-16 h-16 mb-3 rounded-2xl overflow-hidden shadow-2xl border border-white/30"
+              className="w-16 h-16 mb-3 rounded-full overflow-hidden shadow-2xl border-2 border-purple-500/50 bg-white p-1 flex items-center justify-center"
             >
-              <img src="/tlapalli-logo.png" alt="Tlapalli Logo" className="w-full h-full object-cover" />
+              <img src={APP_CONFIG.logoUrl} alt="Logo" className="w-full h-full object-contain" />
             </motion.div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-100 to-zinc-400 drop-shadow-sm">
-              TLAPALLI
+            <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-100 to-indigo-300 drop-shadow-sm">
+              {APP_CONFIG.appName}
             </h1>
-            <p className="text-white/60 mt-1 font-medium tracking-widest uppercase text-[10px]">
+            <p className="text-purple-300/80 mt-1 font-bold tracking-widest uppercase text-[10px]">
               Portal del Alumno — Activar Cuenta
             </p>
           </div>
@@ -252,7 +262,7 @@ function AlumnoActivarCuenta() {
           transition={{ delay: 1 }}
           className="text-center text-white/40 mt-8 text-sm"
         >
-          © 2026 Tlapalli. Todos los derechos reservados.
+          {APP_CONFIG.copyright}
         </motion.p>
       </motion.div>
     </div>

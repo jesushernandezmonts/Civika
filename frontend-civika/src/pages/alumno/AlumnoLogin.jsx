@@ -5,6 +5,7 @@ import { setAccessToken } from '../../services/api';
 import { jwtDecode } from 'jwt-decode';
 import { Eye, EyeOff, Loader2, Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { APP_CONFIG } from '../../config/appConfig';
 
 function AlumnoLogin() {
   const navigate = useNavigate();
@@ -31,16 +32,22 @@ function AlumnoLogin() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden font-['Outfit']">
-      {/* Fondo con imagen + gradiente igual al sistema */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-900/60 via-purple-900/60 to-orange-900/60 z-10" />
-        <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 10, repeat: Infinity, repeatType: 'reverse' }}
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/huamantla-bg.jpg')" }}
+      {/* Fondo Abstracto Moderno Tech - Colegio Cívika */}
+      <div className="absolute inset-0 z-0 bg-slate-950">
+        {/* Orbes de luz degradada */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/30 rounded-full filter blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-600/25 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/20 rounded-full filter blur-[140px]" />
+
+        {/* Malla Geométrica Tecnológica */}
+        <div 
+          className="absolute inset-0 opacity-[0.18]"
+          style={{ 
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(168, 85, 247, 0.4) 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }} 
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />
       </div>
 
       <motion.div
@@ -56,15 +63,15 @@ function AlumnoLogin() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-16 h-16 mb-3 rounded-2xl overflow-hidden shadow-2xl border border-white/30"
+              className="w-40 h-40 md:w-44 md:h-44 mb-4 rounded-full overflow-hidden shadow-[0_0_35px_rgba(147,51,234,0.5)] border-4 border-purple-500 bg-white flex items-center justify-center p-1"
             >
-              <img src="/tlapalli-logo.png" alt="Tlapalli Logo" className="w-full h-full object-cover" />
+              <img src={APP_CONFIG.logoUrl} alt="Logo" className="w-full h-full object-contain scale-[1.05]" />
             </motion.div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-100 to-zinc-400 drop-shadow-sm">
-              TLAPALLI
+            <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-100 to-indigo-300 drop-shadow-sm text-center">
+              {APP_CONFIG.appName}
             </h1>
-            <p className="text-white/60 mt-1 font-medium tracking-widest uppercase text-[10px]">
-              Portal del Alumno — Centro Cultural Huamantla
+            <p className="text-purple-300/80 mt-1 font-bold tracking-widest uppercase text-[10px]">
+              Portal del Alumno — {APP_CONFIG.appSubName}
             </p>
           </div>
 
@@ -165,7 +172,7 @@ function AlumnoLogin() {
           transition={{ delay: 1 }}
           className="text-center text-white/40 mt-8 text-sm"
         >
-          © 2026 Tlapalli. Todos los derechos reservados.
+          {APP_CONFIG.copyright}
         </motion.p>
       </motion.div>
     </div>

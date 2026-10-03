@@ -116,13 +116,12 @@ const PrintHeader = ({ titulo, asunto }) => (
       </div>
       <div className="text-center flex flex-col items-center pt-2">
         <p className="font-black text-neutral-900 text-sm uppercase tracking-tight">{titulo}</p>
-        <p className="text-[10px] text-neutral-500">Centro Cultural Huamantla</p>
+        <p className="text-[10px] text-neutral-500">Colegio Cívika</p>
       </div>
       <div className="text-right text-[9px] text-neutral-600 leading-normal font-sans">
-        <p className="font-bold text-neutral-900 text-[11px] uppercase tracking-tight">Centro Cultural Huamantla</p>
-        <p>Parque Juárez No.14</p>
-        <p>Tel: 2 47 47 2 13 11</p>
-        <p className="font-semibold text-[#801D38]">Área: Coordinación</p>
+        <p className="font-bold text-neutral-900 text-[11px] uppercase tracking-tight">Colegio Cívika</p>
+        <p>Secundaria & Preparatoria</p>
+        <p className="font-semibold text-purple-700">Área: Dirección General</p>
       </div>
     </div>
     <div className="text-right text-[10px] space-y-0.5 pt-1.5 font-sans">
@@ -130,20 +129,19 @@ const PrintHeader = ({ titulo, asunto }) => (
       <p className="text-neutral-500">Huamantla, Tlax., a {hoy()}</p>
     </div>
     <div className="text-xs pt-3 font-sans">
-      <p className="font-black text-neutral-900 uppercase">C. COORDINADOR DEL CENTRO CULTURAL HUAMANTLA</p>
-      <p className="font-black text-[#801D38] tracking-[0.2em] mt-1">P R E S E N T E .</p>
+      <p className="font-black text-neutral-900 uppercase">DIRECCIÓN GENERAL - COLEGIO CÍVIKA</p>
+      <p className="font-black text-purple-700 tracking-[0.2em] mt-1">P R E S E N T E .</p>
     </div>
   </>
 );
 const PrintFooter = () => (
   <div className="border-t border-neutral-200 pt-3 flex justify-between items-center text-[8px] text-neutral-400 z-10 font-sans">
-    <p>c. c. p. Archivo / Centro Cultural Huamantla</p>
+    <p>c. c. p. Archivo / Colegio Cívika</p>
     <div className="flex items-center gap-2 select-none">
       <div className="text-left leading-none">
-        <span className="font-black text-[12px] text-[#801D38] tracking-tighter">SC</span>
-        <span className="text-[6px] font-bold block text-neutral-500 tracking-tight">SECRETARÍA DE CULTURA</span>
+        <span className="font-black text-[12px] text-purple-700 tracking-tighter">CÍVIKA</span>
+        <span className="text-[6px] font-bold block text-neutral-500 tracking-tight">SISTEMA DE GESTIÓN ESCOLAR</span>
       </div>
-      <Flower className="w-5 h-5 text-[#801D38]" />
     </div>
   </div>
 );
@@ -152,17 +150,11 @@ const PrintPage = ({ children }) => (
   <div className="bg-white text-neutral-800 font-sans text-[11px]">
     {/* Top colorful bars */}
     <div className="flex h-1.5 w-full">
-      <div className="bg-[#4D8C3E] w-1/3" />
-      <div className="bg-[#F29C38] w-1/3" />
-      <div className="bg-[#8A244E] w-1/3" />
+      <div className="bg-purple-600 w-1/2" />
+      <div className="bg-indigo-600 w-1/2" />
     </div>
 
     <div className="p-4 md:p-6 relative bg-white select-text overflow-hidden">
-      {/* Faded Watermark in background */}
-      <div className="watermark-print absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-30 pointer-events-none select-none z-0">
-        <Flower className="w-[300px] h-[300px] text-[#801D38]" />
-      </div>
-      
       <div className="relative z-10 space-y-3">
         {children}
       </div>
@@ -176,8 +168,8 @@ const PrintSignOff = () => (
   <div className="pt-5 text-center text-[10px] space-y-5 font-sans">
     <p className="font-bold text-neutral-700 uppercase tracking-widest">A t e n t a m e n t e</p>
     <div>
-      <p className="font-bold text-neutral-950">Mtro. Manuel de la Vega Moreno</p>
-      <p className="text-neutral-500">Coordinador de Centro Cultural Huamantla</p>
+      <p className="font-bold text-neutral-950">Dirección General</p>
+      <p className="text-neutral-500">Colegio Cívika — Secundaria & Preparatoria</p>
     </div>
   </div>
 );
@@ -1001,9 +993,9 @@ function PrintGeneral({ data: d }) {
   const r = d.resumen;
   return (
     <PrintPage>
-      <PrintHeader titulo="REPORTE GENERAL DE ADMINISTRACIÓN" asunto="Reporte General de Administración del Centro Cultural" />
+      <PrintHeader titulo="REPORTE GENERAL DE ADMINISTRACIÓN" asunto="Reporte General de Administración Escolar" />
       <p className="text-xs text-neutral-700 leading-relaxed text-justify indent-4 pt-1 font-sans">
-        Por medio de la presente, se hace entrega del reporte general de administración correspondiente al Centro Cultural Huamantla, con información actualizada al día {hoy()}. A continuación se muestra la relación detallada de los registros actuales:
+        Por medio de la presente, se hace entrega del reporte general de administración correspondiente a Colegio Cívika, con información actualizada al día {hoy()}. A continuación se muestra la relación detallada de los registros actuales:
       </p>
 
       {/* KPIs */}
@@ -1049,7 +1041,7 @@ function PrintFinanciero({ data: d }) {
     <PrintPage>
       <PrintHeader titulo="REPORTE FINANCIERO" asunto="Reporte de Ingresos y Métodos de Pago" />
       <p className="text-xs text-neutral-700 leading-relaxed text-justify indent-4 pt-1 font-sans">
-        A continuación se presenta el reporte financiero detallado del Centro Cultural Huamantla con corte al día {hoy()}.
+        A continuación se presenta el reporte financiero detallado de Colegio Cívika con corte al día {hoy()}.
       </p>
 
       <div className="grid grid-cols-3 gap-2 mb-3 mt-2">
@@ -1103,9 +1095,9 @@ function PrintFinanciero({ data: d }) {
 function PrintAlumnos({ data: d }) {
   return (
     <PrintPage>
-      <PrintHeader titulo="REPORTE DE ALUMNOS" asunto="Listado de Alumnos Inscritos por Taller" />
+      <PrintHeader titulo="REPORTE DE ALUMNOS" asunto="Listado de Alumnos Registrados" />
       <p className="text-xs text-neutral-700 leading-relaxed text-justify indent-4 pt-1 font-sans">
-        A continuación se presenta la relación de alumnos inscritos en los talleres del Centro Cultural Huamantla con corte al {hoy()}.
+        A continuación se presenta la relación de alumnos inscritos en Colegio Cívika con corte al {hoy()}.
       </p>
 
       <div className="grid grid-cols-3 gap-2 mb-3 mt-2">
@@ -1141,7 +1133,7 @@ function PrintTalleres({ data: d }) {
     <PrintPage>
       <PrintHeader titulo="REPORTE DE TALLERES E INSTRUCTORES" asunto="Información de Talleres y Personal Docente" />
       <p className="text-xs text-neutral-700 leading-relaxed text-justify indent-4 pt-1 font-sans">
-        A continuación se detalla la información de los talleres activos y el personal docente del Centro Cultural Huamantla al {hoy()}.
+        A continuación se detalla la información de los talleres activos y el personal docente de Colegio Cívika al {hoy()}.
       </p>
 
       <h3 className="font-black text-[#801D38] uppercase tracking-widest text-[9px] mb-1 mt-3">Talleres</h3>

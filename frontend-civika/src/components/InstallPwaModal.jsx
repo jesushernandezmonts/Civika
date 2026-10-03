@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bookmark, Download, Smartphone, Monitor, Copy, Check, X, ExternalLink } from 'lucide-react';
 
+import { APP_CONFIG } from '../config/appConfig';
+
 export default function InstallPwaModal({ isOpen, onClose }) {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstalled, setIsInstalled] = useState(false);
@@ -68,8 +70,8 @@ export default function InstallPwaModal({ isOpen, onClose }) {
           className="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-3xl p-6 md:p-8 shadow-2xl text-white font-['Outfit'] overflow-hidden gpu-accelerated"
         >
           {/* Fondo decorativo con gradiente */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-pink-500/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
           {/* Botón cerrar */}
           <button
@@ -81,21 +83,21 @@ export default function InstallPwaModal({ isOpen, onClose }) {
 
           {/* Encabezado */}
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 to-orange-500 flex items-center justify-center shadow-lg shadow-pink-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
               <Bookmark className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">¿Cómo volver a entrar a TLAPALLI?</h2>
+              <h2 className="text-xl font-bold text-white">¿Cómo volver a entrar a {APP_CONFIG.appName}?</h2>
               <p className="text-xs text-slate-400">Guarda el acceso en tu celular o computadora</p>
             </div>
           </div>
 
           {/* Opción 1: Instalación directa PWA (Si está disponible) */}
           {deferredPrompt && !isInstalled && (
-            <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-orange-500/10 border border-pink-500/30">
+            <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-blue-500/10 border border-purple-500/30">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-semibold text-sm text-pink-300 flex items-center gap-1.5">
+                  <h3 className="font-semibold text-sm text-purple-300 flex items-center gap-1.5">
                     <Download size={16} /> Instala la App en 1 Clic
                   </h3>
                   <p className="text-xs text-slate-300 mt-1">
@@ -104,7 +106,7 @@ export default function InstallPwaModal({ isOpen, onClose }) {
                 </div>
                 <button
                   onClick={handleInstallClick}
-                  className="px-4 py-2 bg-gradient-to-r from-pink-600 to-orange-600 hover:from-pink-500 hover:to-orange-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer whitespace-nowrap"
+                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-purple-900/40 transition-all cursor-pointer whitespace-nowrap"
                 >
                   Instalar App
                 </button>
@@ -128,13 +130,13 @@ export default function InstallPwaModal({ isOpen, onClose }) {
             {deviceType === 'ios' && (
               <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/60 text-xs space-y-2 text-slate-300">
                 <div className="flex items-center gap-2 text-white font-medium">
-                  <Smartphone size={16} className="text-pink-400" />
+                  <Smartphone size={16} className="text-purple-400" />
                   <span>En Safari (iPhone / iPad):</span>
                 </div>
                 <ol className="list-decimal list-inside space-y-1.5 text-slate-300 pl-1">
                   <li>Toca el botón <strong>Compartir</strong> (ícono de rectángulo con flecha 📤 abajo).</li>
                   <li>Desplázate hacia abajo y selecciona <strong>"Agregar a inicio"</strong> ➕.</li>
-                  <li>¡Listo! Ya tendrás el ícono de TLAPALLI en tus aplicaciones.</li>
+                  <li>¡Listo! Ya tendrás el ícono de Colegio Cívika en tus aplicaciones.</li>
                 </ol>
               </div>
             )}

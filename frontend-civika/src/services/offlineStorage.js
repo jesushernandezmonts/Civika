@@ -4,9 +4,9 @@
  */
 
 const STORAGE_KEYS = {
-  GRUPOS_CACHE: 'tlapalli_cache_grupos',
-  ALUMNOS_CACHE_PREFIX: 'tlapalli_cache_alumnos_grupo_',
-  ASISTENCIAS_PENDIENTES: 'tlapalli_pending_asistencias',
+  GRUPOS_CACHE: 'civika_cache_grupos',
+  ALUMNOS_CACHE_PREFIX: 'civika_cache_alumnos_grupo_',
+  ASISTENCIAS_PENDIENTES: 'civika_pending_asistencias',
 };
 
 export const offlineStorage = {

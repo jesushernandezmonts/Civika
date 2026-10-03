@@ -26,7 +26,7 @@ export class CloudinaryService {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: `tlapalli/${folder}`,
+          folder: `civika/${folder}`,
           resource_type: 'auto',
         },
         (error, result) => {
@@ -68,7 +68,7 @@ export class CloudinaryService {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: `tlapalli/${folder}`,
+          folder: `civika/${folder}`,
           resource_type: 'auto',
           public_id: filename,
         },
@@ -113,10 +113,10 @@ export class CloudinaryService {
 
   extractPublicIdFromUrl(url: string): string | null {
     try {
-      const regex = /\/upload\/(?:v\d+\/)?tlapalli\/(.+?)\.(?:jpg|jpeg|png|gif|webp|pdf|doc|docx|xlsx|txt|csv)$/i;
+      const regex = /\/upload\/(?:v\d+\/)?civika\/(.+?)\.(?:jpg|jpeg|png|gif|webp|pdf|doc|docx|xlsx|txt|csv)$/i;
       const match = url.match(regex);
       if (match) {
-        return `tlapalli/${match[1]}`;
+        return `civika/${match[1]}`;
       }
       return null;
     } catch {

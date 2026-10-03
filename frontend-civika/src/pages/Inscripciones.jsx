@@ -198,7 +198,7 @@ function Inscripciones() {
             <button
               onClick={() => setCurrentPage(page => Math.max(1, page - 1))}
               disabled={currentPage === 1}
-              className="rounded-full border border-white/15 bg-slate-800/90 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:border-pink-400/40 hover:bg-pink-500/20 hover:shadow-lg hover:shadow-pink-500/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:bg-slate-800/90 disabled:hover:shadow-none"
+              className="rounded-full border border-white/15 bg-slate-800/90 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:border-purple-400/40 hover:bg-purple-500/20 hover:shadow-lg hover:shadow-purple-500/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:bg-slate-800/90 disabled:hover:shadow-none"
             >
               Anterior
             </button>
@@ -208,7 +208,7 @@ function Inscripciones() {
             <button
               onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))}
               disabled={currentPage === totalPages}
-              className="rounded-full border border-white/15 bg-slate-800/90 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:border-pink-400/40 hover:bg-pink-500/20 hover:shadow-lg hover:shadow-pink-500/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:bg-slate-800/90 disabled:hover:shadow-none"
+              className="rounded-full border border-white/15 bg-slate-800/90 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:border-purple-400/40 hover:bg-purple-500/20 hover:shadow-lg hover:shadow-purple-500/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:bg-slate-800/90 disabled:hover:shadow-none"
             >
               Siguiente
             </button>
@@ -223,7 +223,7 @@ function Inscripciones() {
             <select 
               value={form.alumnoId} 
               onChange={(e) => setForm({...form, alumnoId: e.target.value})}
-              className="w-full bg-slate-800/80 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 transition-all" 
+              className="w-full bg-slate-800/80 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500/50 transition-all" 
               required
             >
               <option value="" className="text-black">Seleccionar alumno</option>
@@ -238,7 +238,7 @@ function Inscripciones() {
             <select 
               value={form.tallerId} 
               onChange={(e) => setForm({...form, tallerId: e.target.value})}
-              className="w-full bg-slate-800/80 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 transition-all" 
+              className="w-full bg-slate-800/80 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500/50 transition-all" 
               required
             >
               <option value="" className="text-black">Seleccionar taller</option>
@@ -250,7 +250,7 @@ function Inscripciones() {
 
           <div className="flex justify-end gap-3 pt-4">
             <button type="button" onClick={() => setModalOpen(false)} className="px-6 py-3 text-white/60 hover:text-white transition-colors font-bold">Cancelar</button>
-            <button type="submit" className="bg-pink-600 hover:bg-pink-700 text-white font-bold px-8 py-3 rounded-2xl transition shadow-lg shadow-pink-600/20 flex items-center gap-2">
+            <button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-3 rounded-2xl transition shadow-lg shadow-purple-600/20 flex items-center gap-2">
               <UserPlus size={20} />
               Inscribir Alumno
             </button>

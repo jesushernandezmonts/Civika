@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# Script de Respaldos de Base de Datos - TLAPALLI (PostgreSQL)
+# Script de Respaldos de Base de Datos - CIVIKA (PostgreSQL)
 # ==============================================================================
 
 # Cargar variables de entorno si existe el archivo .env
@@ -18,12 +18,12 @@ fi
 
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_DIR="./backups"
-BACKUP_FILE="${BACKUP_DIR}/tlapalli_backup_${TIMESTAMP}.sql.gz"
+BACKUP_FILE="${BACKUP_DIR}/civika_backup_${TIMESTAMP}.sql.gz"
 
 # Crear directorio de respaldos si no existe
 mkdir -p "$BACKUP_DIR"
 
-echo "📦 Iniciando respaldo de la base de datos PostgreSQL..."
+echo "📦 Iniciando respaldo de la base de datos PostgreSQL Civika..."
 echo "📅 Archivo objetivo: $BACKUP_FILE"
 
 # Generar dump de PostgreSQL comprimido con gzip
@@ -35,7 +35,7 @@ if [ $? -eq 0 ]; then
   
   # Limpieza de respaldos locales antiguos (mayores a 30 días)
   echo "🧹 Eliminando respaldos mayores a 30 días..."
-  find "$BACKUP_DIR" -type f -name "tlapalli_backup_*.sql.gz" -mtime +30 -delete
+  find "$BACKUP_DIR" -type f -name "civika_backup_*.sql.gz" -mtime +30 -delete
   echo "✨ Proceso finalizado."
 else
   echo "❌ Error durante la generación del respaldo."

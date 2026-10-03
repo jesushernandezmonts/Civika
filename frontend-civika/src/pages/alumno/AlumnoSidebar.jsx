@@ -10,11 +10,13 @@ import {
   HeartHandshake,
 } from 'lucide-react';
 
+import { APP_CONFIG } from '../../config/appConfig';
+
 function AlumnoSidebar({ isOpen, onClose, alumno, onLogout, tipo }) {
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 font-semibold ${
       isActive
-        ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white border border-pink-400/40 shadow-lg shadow-pink-600/30'
+        ? 'bg-gradient-to-r from-purple-700 to-indigo-700 text-white border border-purple-400/40 shadow-lg shadow-purple-900/50'
         : 'text-slate-300 hover:bg-slate-800 hover:text-white'
     }`;
 
@@ -35,14 +37,14 @@ function AlumnoSidebar({ isOpen, onClose, alumno, onLogout, tipo }) {
         lg:translate-x-0 lg:static lg:flex
       `}>
         {/* Header del sidebar */}
-        <div className="flex items-center justify-between mb-10 px-2">
+        <div className="flex items-center justify-between mb-8 px-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/20">
-              <img src="/tlapalli-logo.png" alt="Logo" className="w-full h-full object-cover" />
+            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-500/40 bg-white flex items-center justify-center p-1 shadow-lg shadow-purple-900/40 shrink-0">
+              <img src={APP_CONFIG.logoUrl} alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tighter text-white">TLAPALLI</span>
-              <span className="text-[10px] text-pink-500 font-bold tracking-[0.2em] uppercase leading-none">Alumno</span>
+              <span className="text-xl font-black tracking-tight text-white leading-tight">{APP_CONFIG.appName}</span>
+              <span className="text-[10px] text-purple-400 font-bold tracking-[0.15em] uppercase leading-none mt-0.5">Portal Alumno</span>
             </div>
           </div>
           <button onClick={onClose} className="lg:hidden p-2 text-white/40 hover:text-white rounded-xl hover:bg-slate-800/90 transition">
@@ -96,14 +98,14 @@ function AlumnoSidebar({ isOpen, onClose, alumno, onLogout, tipo }) {
           <NavLink to="/alumno/perfil" onClick={onClose}
             className="w-full flex items-center gap-3 mb-3 px-1 hover:bg-slate-800/80 rounded-2xl py-2 transition-all group text-left"
           >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 p-[2px] flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 p-[2px] flex-shrink-0 shadow-lg shadow-purple-900/30">
               <div className="w-full h-full rounded-[10px] bg-neutral-900 flex items-center justify-center">
                 <User size={20} className="text-white/80" />
               </div>
             </div>
             <div className="flex flex-col min-w-0 flex-1">
-              <span className="text-xs font-bold text-white/90 truncate group-hover:text-pink-400 transition-colors">{alumno?.nombre || alumno?.email}</span>
-              <span className="text-[10px] text-pink-400 font-bold uppercase tracking-wider">Alumno</span>
+              <span className="text-xs font-bold text-white/90 truncate group-hover:text-purple-300 transition-colors">{alumno?.nombre || alumno?.email}</span>
+              <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider">Alumno</span>
             </div>
           </NavLink>
           <button

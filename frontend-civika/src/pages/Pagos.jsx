@@ -45,10 +45,11 @@ function Pagos() {
 
   const fetchAlumnos = async () => {
     try {
-      const { data } = await api.get('/grupos/alumnos-disponibles');
-      setAlumnos(data);
+      const endpoint = user?.rol === 'profesor' ? '/grupos/alumnos-disponibles' : '/alumnos';
+      const { data } = await api.get(endpoint);
+      setAlumnos(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error('Error al cargar alumnos del taller', err);
+      console.error('Error al cargar alumnos', err);
       setAlumnos([]);
     }
   };
@@ -201,7 +202,7 @@ function Pagos() {
             <button
               onClick={() => setCurrentPage(page => Math.max(1, page - 1))}
               disabled={currentPage === 1}
-              className="rounded-full border border-white/15 bg-slate-800/90 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:border-pink-400/40 hover:bg-pink-500/20 hover:shadow-lg hover:shadow-pink-500/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:bg-slate-800/90 disabled:hover:shadow-none"
+              className="rounded-full border border-white/15 bg-slate-800/90 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:border-purple-400/40 hover:bg-purple-500/20 hover:shadow-lg hover:shadow-purple-500/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:bg-slate-800/90 disabled:hover:shadow-none"
             >
               Anterior
             </button>
@@ -211,7 +212,7 @@ function Pagos() {
             <button
               onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))}
               disabled={currentPage === totalPages}
-              className="rounded-full border border-white/15 bg-slate-800/90 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:border-pink-400/40 hover:bg-pink-500/20 hover:shadow-lg hover:shadow-pink-500/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:bg-slate-800/90 disabled:hover:shadow-none"
+              className="rounded-full border border-white/15 bg-slate-800/90 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:border-purple-400/40 hover:bg-purple-500/20 hover:shadow-lg hover:shadow-purple-500/10 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:bg-slate-800/90 disabled:hover:shadow-none"
             >
               Siguiente
             </button>

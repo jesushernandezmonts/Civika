@@ -32,4 +32,14 @@ Thumbs.db
 # Database
 *.db
 *.sqlite
+
+# Environment
 .env
+.env.*
+*.env
+**/.env
+
+# AI & Agent Workspaces
+.agents/
+ECC/
+scratch/

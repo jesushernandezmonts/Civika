@@ -57,11 +57,11 @@ export class AlumnosController {
     return this.alumnosService.getTipoAlumno(req.user.id);
   }
 
-  // ========== ENDPOINTS ADMIN/INSTRUCTOR ==========
+  // ========== ENDPOINTS ADMIN/INSTRUCTOR/SECRETARIA ==========
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'profesor')
+  @Roles('admin', 'profesor', 'secretaria')
   @ApiOperation({ summary: 'Crear un nuevo alumno' })
   create(@Req() req, @Body() createAlumnoDto: CreateAlumnoDto) {
     return this.alumnosService.create(createAlumnoDto, req.user);
@@ -69,7 +69,7 @@ export class AlumnosController {
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'profesor')
+  @Roles('admin', 'profesor', 'secretaria')
   findAll(@Query('skip') skip?: string, @Query('take') take?: string) {
     return this.alumnosService.findAll(
       skip ? parseInt(skip) : undefined,
@@ -79,21 +79,21 @@ export class AlumnosController {
 
   @Get('count')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'profesor')
+  @Roles('admin', 'profesor', 'secretaria')
   countAll() {
     return this.alumnosService.countAll();
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'profesor')
+  @Roles('admin', 'profesor', 'secretaria')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.alumnosService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'secretaria')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateAlumnoDto: UpdateAlumnoDto) {
     return this.alumnosService.update(id, updateAlumnoDto);
   }

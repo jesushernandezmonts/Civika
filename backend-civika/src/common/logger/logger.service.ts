@@ -5,7 +5,7 @@ export class AppLogger implements NestLoggerService {
   private readonly logger: Logger;
 
   constructor(@Optional() @Inject('LOGGER_CONTEXT') context?: string) {
-    this.logger = new Logger(context || 'Tlapalli');
+    this.logger = new Logger(context || 'Civika');
   }
 
   log(message: string, context?: string) {

@@ -12,7 +12,7 @@ const getTallerIcon = (nombreTaller) => {
   if (name.includes('guitarra')) return { icon: Guitar, color: 'text-amber-400', bg: 'bg-amber-500/10' };
   if (name.includes('piano')) return { icon: Piano, color: 'text-indigo-400', bg: 'bg-indigo-500/10' };
   if (name.includes('violín') || name.includes('violin')) return { icon: Music, color: 'text-purple-400', bg: 'bg-purple-500/10' };
-  if (name.includes('canto')) return { icon: Mic, color: 'text-pink-400', bg: 'bg-pink-500/10' };
+  if (name.includes('canto')) return { icon: Mic, color: 'text-purple-400', bg: 'bg-purple-500/10' };
 
   // Artes plásticas
   if (name.includes('pintura') || name.includes('dibujo') || name.includes('plásticas') || name.includes('plasticas'))
@@ -224,7 +224,7 @@ function Talleres() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard icon={Calendar} label="Total Talleres" value={totalTalleres} color="white" />
         <StatCard icon={Users} label="Alumnos Inscritos" value={totalAlumnos} color="emerald" />
-        <StatCard icon={TrendingUp} label="Talleres Llenos" value={talleresLlenos} color="rose" />
+        <StatCard icon={TrendingUp} label="Talleres Llenos" value={talleresLlenos} color="purple" />
         <StatCard icon={DollarSign} label="Ingresos Reales 💰" value={`$${ingresosReales.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} color="amber" />
       </div>
 
@@ -239,7 +239,7 @@ function Talleres() {
 
         <button 
           onClick={handleNew} 
-          className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white font-black uppercase tracking-wider text-xs px-6 py-3.5 rounded-2xl transition flex items-center justify-center gap-2 cursor-pointer shrink-0 ring-1 ring-pink-300/20"
+          className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-black uppercase tracking-wider text-xs px-6 py-3.5 rounded-2xl transition flex items-center justify-center gap-2 cursor-pointer shrink-0 ring-1 ring-purple-300/20"
         >
           <Plus size={16} />
           <span className="whitespace-nowrap">Nuevo Taller</span>

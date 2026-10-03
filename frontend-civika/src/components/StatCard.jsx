@@ -1,25 +1,130 @@
 import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
-const colorMap = {
-  white: 'bg-slate-800 border-white/25 text-white hover:shadow-white/20',
-  emerald: 'bg-emerald-500/90 border-emerald-400/40 text-white hover:shadow-emerald-500/20',
-  amber: 'bg-amber-500/90 border-amber-400/40 text-white hover:shadow-amber-500/20',
-  rose: 'bg-rose-500/90 border-rose-400/40 text-white hover:shadow-rose-500/20',
-  purple: 'bg-purple-500/90 border-purple-400/40 text-white hover:shadow-purple-500/20',
-  cyan: 'bg-cyan-500/90 border-cyan-400/40 text-white hover:shadow-cyan-500/20',
+/* ── Animated number counter ── */
+function useCounter(target, duration = 1200, start = 0) {
+  const [count, setCount] = useState(start);
+  const raf = useRef(null);
+
+  useEffect(() => {
+    const startTime = performance.now();
+    const startVal = start;
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(startVal + (target - startVal) * eased));
+      if (progress < 1) {
+        raf.current = requestAnimationFrame(tick);
+      }
+    };
+
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, [target, duration, start]);
+
+  return count;
+}
+
+/* ── Glow color maps ── */
+const glowMap = {
+  white:   'shadow-white/10  hover:shadow-white/20  border-white/20',
+  emerald: 'shadow-emerald-500/20 hover:shadow-emerald-500/40 border-emerald-500/30',
+  amber:   'shadow-amber-500/20 hover:shadow-amber-500/40 border-amber-500/30',
+  rose:    'shadow-rose-500/20 hover:shadow-rose-500/40 border-rose-500/30',
+  purple:  'shadow-purple-500/20 hover:shadow-purple-500/40 border-purple-500/30',
+  cyan:    'shadow-cyan-500/20 hover:shadow-cyan-500/40 border-cyan-500/30',
+  blue:    'shadow-blue-500/20 hover:shadow-blue-500/40 border-blue-500/30',
 };
 
-function StatCard({ icon: Icon, label, value, color = 'white' }) {
+const iconBgMap = {
+  white:   'bg-white/10 text-white',
+  emerald: 'bg-emerald-500/15 text-emerald-400',
+  amber:   'bg-amber-500/15 text-amber-400',
+  rose:    'bg-rose-500/15 text-rose-400',
+  purple:  'bg-purple-500/15 text-purple-400',
+  cyan:    'bg-cyan-500/15 text-cyan-400',
+  blue:    'bg-blue-500/15 text-blue-400',
+};
+
+const gradientMap = {
+  white:   'from-slate-800 to-slate-900',
+  emerald: 'from-emerald-950/50 to-slate-900',
+  amber:   'from-amber-950/50 to-slate-900',
+  rose:    'from-rose-950/50 to-slate-900',
+  purple:  'from-purple-950/50 to-slate-900',
+  cyan:    'from-cyan-950/50 to-slate-900',
+  blue:    'from-blue-950/50 to-slate-900',
+};
+
+/**
+ * StatCard mejorado con:
+ * - Counter animation al montar
+ * - Glow animado al hover
+ * - Icono con fondo circular de color
+ * - Gradiente interno sutil
+ *
+ * Props:
+ *  icon     – componente Lucide
+ *  label    – texto descriptivo
+ *  value    – número o string
+ *  color    – 'white' | 'emerald' | 'amber' | 'rose' | 'purple' | 'cyan' | 'blue'
+ *  prefix   – prefijo opcional (ej. "$")
+ *  suffix   – sufijo opcional (ej. "%")
+ *  animate  – si animar el número (default true si value es number)
+ */
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  color = 'white',
+  prefix = '',
+  suffix = '',
+  animate = true,
+}) {
+  const isNumber = typeof value === 'number';
+  const displayValue = useCounter(isNumber && animate ? value : 0, 1400);
+
+  const glow = glowMap[color] || glowMap.white;
+  const iconBg = iconBgMap[color] || iconBgMap.white;
+  const gradient = gradientMap[color] || gradientMap.white;
+
+  const shown = isNumber && animate
+    ? `${prefix}${displayValue.toLocaleString()}${suffix}`
+    : `${prefix}${typeof value === 'number' ? value.toLocaleString() : value ?? '—'}${suffix}`;
+
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
-      className={`rounded-2xl p-4 border  ${colorMap[color] || colorMap.white} flex items-center gap-3 shadow-lg transition-all duration-300 cursor-pointer overflow-hidden relative group`}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      whileHover={{ scale: 1.03, y: -2 }}
+      className={`
+        relative overflow-hidden rounded-2xl p-5 border
+        bg-gradient-to-br ${gradient}
+        shadow-lg ${glow}
+        transition-all duration-300 cursor-default group
+      `}
     >
-      <div className="absolute -right-4 -top-4 w-24 h-24 bg-slate-800/80 rounded-full blur-2xl group-hover:bg-slate-800/90 transition-all" />
-      <Icon size={22} className="opacity-90 shrink-0" />
-      <div>
-        <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{label}</p>
-        <p className="text-xl font-black tracking-tighter">{value}</p>
+      {/* Glow blob en hover */}
+      <div className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl bg-current pointer-events-none" style={{ color: 'inherit', opacity: 0 }} />
+
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-[11px] font-black uppercase tracking-[0.15em] text-white/50 mb-2 truncate">
+            {label}
+          </p>
+          <p className="text-2xl font-black tracking-tight text-white leading-none">
+            {shown}
+          </p>
+        </div>
+        {Icon && (
+          <div className={`p-2.5 rounded-xl ${iconBg} shrink-0`}>
+            <Icon size={20} />
+          </div>
+        )}
       </div>
     </motion.div>
   );

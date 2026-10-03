@@ -15,29 +15,30 @@ import {
   LayoutDashboard,
   AlertTriangle
 } from 'lucide-react';
+import { APP_CONFIG } from '../config/appConfig';
 
 const TOUR_STEPS = [
   {
     target: null, // Modal central de bienvenida
-    title: '¡Bienvenido(a) a Tlapalli!',
-    description: 'Te damos la bienvenida a tu panel de instructor. Te guiaremos paso a paso por las herramientas que utilizarás a diario.',
+    title: `¡Bienvenido(a) a ${APP_CONFIG.appName}!`,
+    description: 'Te damos la bienvenida a tu panel docente en Colegio Cívika. Te guiaremos paso a paso por las herramientas que utilizarás a diario.',
     icon: Sparkles,
-    badge: 'Paso 1 de 6',
+    badge: 'PASO 1 DE 6',
   },
   {
     target: '[data-tour="sidebar-mis-grupos"]',
     title: 'Mis Grupos',
-    description: 'En esta sección podrás consultar tus talleres asignados, crear grupos de clase y administrar a tus alumnos inscritos.',
+    description: 'En esta sección podrás consultar tus grupos escolares asignados y administrar a tus alumnos inscritos.',
     icon: LayoutDashboard,
-    badge: 'Paso 2 de 6',
+    badge: 'PASO 2 DE 6',
   },
   {
     target: '[data-tour="sidebar-asistencia"]',
-    title: 'Pasar Lista y Política de Bloqueo',
+    title: 'Pasar Lista y Política de Asistencias',
     description: 'Registra la asistencia diaria de tus alumnos de forma rápida, marca justificantes o consulta el historial de asistencias.',
-    warning: 'Solo cuentas con 2 oportunidades para omitir pasar lista. Si acumulas más fallas, tu cuenta en el sistema se bloqueará automáticamente y deberás comunicarte con la Licenciada para que la desactive/desbloquee.',
+    warning: 'Recuerda pasar lista oportunamente en cada clase para mantener al día el reporte institucional con Dirección General.',
     icon: ClipboardCheck,
-    badge: 'Paso 3 de 6',
+    badge: 'PASO 3 DE 6',
   },
   {
     target: '[data-tour="sidebar-pagos"]',
@@ -68,7 +69,7 @@ export default function TeacherTour({ forceOpen = false, onCloseForce }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [targetRect, setTargetRect] = useState(null);
 
-  const storageKey = user?.id ? `tlapalli_profesor_tour_count_${user.id}` : 'tlapalli_profesor_tour_count';
+  const storageKey = user?.id ? `civika_profesor_tour_count_${user.id}` : 'civika_profesor_tour_count';
 
   // Manejar apertura automática o forzada
   useEffect(() => {
@@ -216,25 +217,68 @@ export default function TeacherTour({ forceOpen = false, onCloseForce }) {
     }
   }
 
+  // Destacar el elemento en el DOM mientras está activo en el paso actual
+  useEffect(() => {
+    if (!isOpen) return;
+    const step = TOUR_STEPS[currentStep];
+    if (!step?.target) return;
+    const el = document.querySelector(step.target);
+    if (el) {
+      el.classList.add('civika-tour-active');
+      return () => {
+        el.classList.remove('civika-tour-active');
+      };
+    }
+  }, [isOpen, currentStep]);
+
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-auto">
-        {/* Fondo translúcido oscuro con desenfoque */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-slate-950/75 backdrop-blur-sm transition-all"
-          onClick={handleSkip}
-        />
+        {/* Fondo oscuro: si hay un objetivo seleccionado, se recorta un hueco para que el botón no quede tapado ni borroso */}
+        {!isCentered && targetRect ? (
+          <svg className="fixed inset-0 w-full h-full pointer-events-none z-0">
+            <defs>
+              <mask id="teacher-tour-spotlight-mask">
+                <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                <rect
+                  x={targetRect.left - 6}
+                  y={targetRect.top - 6}
+                  width={targetRect.width + 12}
+                  height={targetRect.height + 12}
+                  rx="16"
+                  ry="16"
+                  fill="black"
+                />
+              </mask>
+            </defs>
+            <rect
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              fill="rgba(2, 6, 23, 0.82)"
+              mask="url(#teacher-tour-spotlight-mask)"
+              className="pointer-events-auto cursor-pointer"
+              onClick={handleSkip}
+            />
+          </svg>
+        ) : (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-all"
+            onClick={handleSkip}
+          />
+        )}
 
-        {/* Foco o resplandor sobre el elemento objetivo */}
+        {/* Foco o resplandor sobre el elemento objetivo (sin fondo que tape el texto) */}
         {!isCentered && targetRect && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="absolute rounded-2xl pointer-events-none ring-4 ring-pink-500/80 shadow-[0_0_35px_rgba(236,72,153,0.6)] bg-pink-500/10 z-10 transition-all duration-300"
+            className="absolute rounded-2xl pointer-events-none ring-2 ring-purple-400 shadow-[0_0_35px_rgba(168,85,247,0.7)] bg-transparent z-10 transition-all duration-300"
             style={{
               top: targetRect.top - 6,
               left: targetRect.left - 6,
@@ -254,14 +298,14 @@ export default function TeacherTour({ forceOpen = false, onCloseForce }) {
             transition={{ duration: 0.25 }}
             style={isCentered ? {} : tooltipStyle}
             className={`
-              z-20 w-full max-w-md bg-slate-900/95 border border-pink-500/30 rounded-3xl p-6 shadow-2xl backdrop-blur-xl text-white
+              z-20 w-full max-w-md bg-slate-900/95 border border-purple-500/30 rounded-3xl p-6 shadow-2xl shadow-purple-950/50 backdrop-blur-xl text-white
               ${isCentered ? 'relative mx-auto' : 'fixed'}
             `}
           >
             {/* Cabecera */}
             <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-full text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles size={12} className="text-pink-400" />
+              <span className="px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles size={12} className="text-purple-400" />
                 {step.badge}
               </span>
               <button
@@ -275,9 +319,9 @@ export default function TeacherTour({ forceOpen = false, onCloseForce }) {
 
             {/* Contenido */}
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-500 p-[2px] flex-shrink-0 shadow-lg shadow-pink-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 p-[2px] flex-shrink-0 shadow-lg shadow-purple-500/25">
                 <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
-                  <StepIcon size={22} className="text-pink-400" />
+                  <StepIcon size={22} className="text-purple-400" />
                 </div>
               </div>
               <div>
@@ -305,7 +349,7 @@ export default function TeacherTour({ forceOpen = false, onCloseForce }) {
             {/* Progreso en barra */}
             <div className="w-full bg-slate-800/80 rounded-full h-1.5 mb-6 overflow-hidden">
               <motion.div 
-                className="bg-gradient-to-r from-pink-500 to-orange-500 h-full rounded-full"
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${((currentStep + 1) / TOUR_STEPS.length) * 100}%` }}
                 transition={{ duration: 0.3 }}
@@ -333,7 +377,7 @@ export default function TeacherTour({ forceOpen = false, onCloseForce }) {
 
                 <button
                   onClick={handleNext}
-                  className="flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-pink-600 to-orange-600 hover:from-pink-500 hover:to-orange-500 text-white rounded-xl text-xs font-black shadow-lg shadow-pink-600/30 transition cursor-pointer"
+                  className="flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-black shadow-lg shadow-purple-600/30 transition cursor-pointer"
                 >
                   {currentStep === TOUR_STEPS.length - 1 ? (
                     <>Entendido <CheckCircle2 size={14} /></>

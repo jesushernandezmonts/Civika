@@ -23,7 +23,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Controller('asistencias')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin', 'profesor')
+@Roles('admin', 'profesor', 'secretaria')
 export class AsistenciasController {
   constructor(
     private readonly asistenciasService: AsistenciasService,
@@ -68,12 +68,12 @@ export class AsistenciasController {
 
   // Obtener alumnos de un grupo para pasar lista
   @Get('grupo/:grupoId/alumnos')
-  @Roles('admin', 'profesor')
+  @Roles('admin', 'profesor', 'secretaria')
   getAlumnosByGrupo(
     @Param('grupoId', ParseIntPipe) grupoId: number,
     @Request() req,
   ) {
-    const isAdmin = req.user.rol === 'admin';
+    const isAdmin = req.user.rol === 'admin' || req.user.rol === 'secretaria';
     const instructorId = req.user.instructorId;
     if (!isAdmin && !instructorId) {
       throw new BadRequestException('Usuario no es instructor ni administrador');
@@ -83,16 +83,13 @@ export class AsistenciasController {
 
   // Guardar asistencias de un grupo en una fecha
   @Post('grupo/:grupoId')
-  @Roles('profesor')
+  @Roles('profesor', 'secretaria', 'admin')
   saveAsistencias(
     @Param('grupoId', ParseIntPipe) grupoId: number,
     @Body() createAsistenciasDto: CreateAsistenciasDto,
     @Request() req,
   ) {
-    const instructorId = req.user.instructorId;
-    if (!instructorId) {
-      throw new Error('Usuario no es instructor');
-    }
+    const instructorId = req.user.instructorId || 0;
     // Asegurar que el grupoId del body coincide con el de la URL
     createAsistenciasDto.grupoId = grupoId;
     return this.asistenciasService.saveAsistencias(createAsistenciasDto, instructorId);
@@ -100,13 +97,13 @@ export class AsistenciasController {
 
   // Obtener asistencias de un grupo en una fecha específica
   @Get('grupo/:grupoId')
-  @Roles('admin', 'profesor')
+  @Roles('admin', 'profesor', 'secretaria')
   getAsistenciasByFecha(
     @Param('grupoId', ParseIntPipe) grupoId: number,
     @Query() query: AsistenciaQueryDto,
     @Request() req,
   ) {
-    const isAdmin = req.user.rol === 'admin';
+    const isAdmin = req.user.rol === 'admin' || req.user.rol === 'secretaria';
     const instructorId = req.user.instructorId;
     if (!isAdmin && !instructorId) {
       throw new BadRequestException('Usuario no es instructor ni administrador');
@@ -116,12 +113,12 @@ export class AsistenciasController {
 
   // Obtener historial de asistencias de un grupo
   @Get('grupo/:grupoId/historial')
-  @Roles('admin', 'profesor')
+  @Roles('admin', 'profesor', 'secretaria')
   getHistorial(
     @Param('grupoId', ParseIntPipe) grupoId: number,
     @Request() req,
   ) {
-    const isAdmin = req.user.rol === 'admin';
+    const isAdmin = req.user.rol === 'admin' || req.user.rol === 'secretaria';
     const instructorId = req.user.instructorId;
     if (!isAdmin && !instructorId) {
       throw new BadRequestException('Usuario no es instructor ni administrador');

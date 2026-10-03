@@ -37,6 +37,7 @@ export class AuthService {
 
     const isMatch = await bcrypt.compare(password, alumno.passwordHash);
     if (!isMatch) {
+      this.logger.security(`Intento fallido de login alumno para: ${email}`, 'AuthService');
       throw new UnauthorizedException('Credenciales inválidas');
     }
 

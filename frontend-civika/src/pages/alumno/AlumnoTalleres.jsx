@@ -45,15 +45,15 @@ function AlumnoTalleres() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {talleres.map((insc) => (
-            <div key={insc.id} className="bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl p-6 hover:border-pink-500/50 transition-all duration-300 shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-1.5 h-full bg-pink-500" />
+            <div key={insc.id} className="bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-300 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-purple-600" />
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-pink-500/20 border border-pink-500/30 text-pink-400">
+                <div className="p-3 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400">
                   <Palette size={24} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-white group-hover:text-pink-400 transition-colors">{insc.taller?.nombreTaller}</h3>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-pink-400">
+                  <h3 className="text-xl font-black text-white group-hover:text-purple-400 transition-colors">{insc.taller?.nombreTaller}</h3>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-400">
                     Inscrito desde {new Date(insc.fechaInscripcion).toLocaleDateString()}
                   </span>
                 </div>

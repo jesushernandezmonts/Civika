@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, ShieldAlert, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { APP_CONFIG } from '../config/appConfig';
+import api, { setAccessToken } from '../services/api';
 
 const GoogleIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24">
@@ -20,7 +22,7 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login, bloqueoMsg, setBloqueoMsg, user } = useAuth();
+  const { login, loginDemo, bloqueoMsg, setBloqueoMsg, user, setUser, setLoading: setAuthLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -29,6 +31,10 @@ function Login() {
     if (user) {
       if (user.rol === 'admin') {
         navigate('/dashboard', { replace: true });
+      } else if (user.rol === 'secretaria') {
+        navigate('/pagos', { replace: true });
+      } else if (user.rol === 'alumno') {
+        navigate('/alumno/dashboard', { replace: true });
       } else {
         navigate('/mis-grupos', { replace: true });
       }
@@ -50,9 +56,13 @@ function Login() {
     setLoading(true);
 
     try {
-      const user = await login(email, password);
-      if (user.rol === 'admin') {
+      const loggedUser = await login(email, password);
+      if (loggedUser.rol === 'admin') {
         navigate('/dashboard');
+      } else if (loggedUser.rol === 'secretaria') {
+        navigate('/pagos');
+      } else if (loggedUser.rol === 'alumno') {
+        navigate('/alumno/dashboard');
       } else {
         navigate('/mis-grupos');
       }
@@ -66,8 +76,31 @@ function Login() {
       } else if (err.response?.status === 429) {
         setError('Demasiados intentos. Espere un minuto antes de intentar de nuevo.');
       } else {
-        setError('Error de conexión. Intente de nuevo.');
+        setError('Error de conexión con el servidor. Puedes usar los botones de Acceso Demo abajo.');
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoLogin = (role) => {
+    setError('');
+    setBloqueoMsg(null);
+    setLoading(true);
+    try {
+      const demoUser = loginDemo(role);
+      if (role === 'admin') {
+        navigate('/dashboard');
+      } else if (role === 'secretaria') {
+        navigate('/pagos');
+      } else if (role === 'instructor') {
+        navigate('/mis-grupos');
+      } else if (role === 'alumno') {
+        navigate('/alumno/dashboard');
+      }
+    } catch (err) {
+      console.error('Error en demo login:', err);
+      setError('Error al acceder en modo demo');
     } finally {
       setLoading(false);
     }
@@ -79,12 +112,22 @@ function Login() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden font-['Outfit']">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-900/60 via-purple-900/60 to-orange-900/60 z-10" />
+      {/* Fondo Abstracto Moderno Tech - Colegio Cívika */}
+      <div className="absolute inset-0 z-0 bg-slate-950">
+        {/* Orbes de luz degradada */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/30 rounded-full filter blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-600/25 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/20 rounded-full filter blur-[140px]" />
+
+        {/* Malla Geométrica Tecnológica */}
         <div 
-          className="absolute inset-0 bg-cover bg-center gpu-accelerated"
-          style={{ backgroundImage: "url('/huamantla-bg.jpg')" }}
+          className="absolute inset-0 opacity-[0.18]"
+          style={{ 
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(168, 85, 247, 0.4) 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }} 
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />
       </div>
 
       <motion.div
@@ -98,25 +141,25 @@ function Login() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-16 h-16 mb-2 rounded-2xl overflow-hidden shadow-2xl border border-white/30"
+              className="w-40 h-40 md:w-44 md:h-44 mb-4 rounded-full overflow-hidden shadow-[0_0_35px_rgba(147,51,234,0.5)] border-4 border-purple-500 bg-white flex items-center justify-center p-1"
             >
-              <img src="/tlapalli-logo.png" alt="Tlapalli Logo" className="w-full h-full object-cover" />
+              <img src={APP_CONFIG.logoUrl} alt="Logo" className="w-full h-full object-contain scale-[1.05]" />
             </motion.div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-100 to-zinc-400 drop-shadow-sm">
-              TLAPALLI
+            <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-100 to-indigo-300 drop-shadow-sm text-center">
+              {APP_CONFIG.appName}
             </h1>
-            <p className="text-white/60 mt-1 font-medium tracking-widest uppercase text-[10px]">Gestión Cultural & Educativa</p>
+            <p className="text-purple-300/80 mt-1 font-bold tracking-widest uppercase text-[10px]">{APP_CONFIG.appSubName}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1">
               <label className="text-sm font-semibold text-white/80 ml-1">Correo</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-pink-400 transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-purple-400 transition-colors" />
                 <input
-                  className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 focus:bg-slate-800/95 transition-all"
+                  className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 focus:bg-slate-800/95 transition-all"
                   type="email"
-                  placeholder="admin@tlapalli.com"
+                  placeholder="usuario@civika.edu.mx"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -128,9 +171,9 @@ function Login() {
             <div className="space-y-1">
               <label className="text-sm font-semibold text-white/80 ml-1">Contraseña</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-pink-400 transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-purple-400 transition-colors" />
                 <input
-                  className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 focus:bg-slate-800/95 transition-all"
+                  className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 focus:bg-slate-800/95 transition-all"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
@@ -149,7 +192,7 @@ function Login() {
               <div className="flex justify-end">
                 <Link
                   to="/forgot-password"
-                  className="text-xs text-pink-400 hover:text-pink-300 transition-colors font-medium"
+                  className="text-xs text-purple-400 hover:text-purple-300 transition-colors font-medium"
                 >
                   ¿Olvidaste tu contraseña?
                 </Link>
@@ -197,7 +240,7 @@ function Login() {
               className="w-full relative group h-12 overflow-hidden rounded-2xl font-bold text-white transition-all shadow-lg disabled:opacity-60"
               type="submit"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-orange-600 to-pink-600 bg-[length:200%_auto] group-hover:bg-right transition-all duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] group-hover:bg-right transition-all duration-500" />
               <span className="relative flex items-center justify-center gap-2">
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Iniciar sesión"}
               </span>
@@ -215,37 +258,69 @@ function Login() {
             <motion.button
               whileHover={{
                 scale: 1.02,
-                boxShadow: "0 0 20px rgba(236, 72, 153, 0.3)"
+                boxShadow: "0 0 20px rgba(147, 51, 234, 0.3)"
               }}
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 h-12 bg-slate-800/90 hover:bg-slate-800/95 border border-white/20 hover:border-pink-500/50 rounded-2xl font-bold text-white transition-all shadow-lg"
+              className="w-full flex items-center justify-center gap-3 h-12 bg-slate-800/90 hover:bg-slate-800/95 border border-white/20 hover:border-purple-500/50 rounded-2xl font-bold text-white transition-all shadow-lg"
             >
               <GoogleIcon className="w-5 h-5" />
               <span>Iniciar sesión con Google</span>
             </motion.button>
 
-            {/* Separador y link al portal del alumno */}
-            <div className="relative py-1">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/15" />
+            <div className="pt-4 border-t border-white/10 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-bold text-purple-300 uppercase tracking-wider">
+                  ⚡ Acceso Rápido de Prueba (Demo):
+                </p>
+                <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full font-semibold">
+                  1 Clic
+                </span>
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-transparent px-2 text-white/30 font-medium">¿Eres alumno?</span>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleDemoLogin('admin')}
+                  className="p-2.5 bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30 hover:border-purple-400 rounded-xl text-xs font-bold text-purple-200 transition-all text-center flex flex-col items-center gap-1 cursor-pointer group shadow-sm hover:scale-[1.02]"
+                >
+                  <span className="text-base">👑</span>
+                  <span className="font-semibold text-[11px] text-white">Dirección</span>
+                  <span className="text-[9px] text-purple-300/70 font-normal">Dashboard</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleDemoLogin('secretaria')}
+                  className="p-2.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 hover:border-blue-400 rounded-xl text-xs font-bold text-blue-200 transition-all text-center flex flex-col items-center gap-1 cursor-pointer group shadow-sm hover:scale-[1.02]"
+                >
+                  <span className="text-base">👩‍💼</span>
+                  <span className="font-semibold text-[11px] text-white">Secretaría</span>
+                  <span className="text-[9px] text-blue-300/70 font-normal">Caja & Cobros</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleDemoLogin('instructor')}
+                  className="p-2.5 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500/30 hover:border-amber-400 rounded-xl text-xs font-bold text-amber-200 transition-all text-center flex flex-col items-center gap-1 cursor-pointer group shadow-sm hover:scale-[1.02]"
+                >
+                  <span className="text-base">👨‍🏫</span>
+                  <span className="font-semibold text-[11px] text-white">Docente</span>
+                  <span className="text-[9px] text-amber-300/70 font-normal">Mis Grupos</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleDemoLogin('alumno')}
+                  className="p-2.5 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 hover:border-emerald-400 rounded-xl text-xs font-bold text-emerald-200 transition-all text-center flex flex-col items-center gap-1 cursor-pointer group shadow-sm hover:scale-[1.02]"
+                >
+                  <span className="text-base">👨‍👩‍👧</span>
+                  <span className="font-semibold text-[11px] text-white">Padre / Alumno</span>
+                  <span className="text-[9px] text-emerald-300/70 font-normal">Portal</span>
+                </button>
               </div>
             </div>
-
-            <Link to="/alumno/login">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full flex items-center justify-center gap-2 h-12 bg-slate-800/80 hover:bg-slate-800/90 border border-white/15 hover:border-pink-500/40 rounded-2xl font-bold text-white/70 hover:text-white transition-all text-sm"
-              >
-                <GraduationCap className="w-5 h-5 text-pink-400" />
-                <span>Acceder al Portal del Alumno</span>
-              </motion.div>
-            </Link>
           </form>
         </div>
 
@@ -255,7 +330,7 @@ function Login() {
           transition={{ delay: 1 }}
           className="text-center text-white/40 mt-8 text-sm"
         >
-          © 2026 Tlapalli. Todos los derechos reservados.
+          {APP_CONFIG.copyright}
         </motion.p>
       </motion.div>
     </div>

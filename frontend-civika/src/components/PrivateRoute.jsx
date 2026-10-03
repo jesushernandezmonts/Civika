@@ -28,6 +28,8 @@ function PrivateRoute({ allowedRoles }) {
     // Redirigir al dashboard correspondiente según su rol
     if (user.rol === 'admin') {
       return <Navigate to="/dashboard" replace />;
+    } else if (user.rol === 'secretaria') {
+      return <Navigate to="/pagos" replace />;
     } else {
       return <Navigate to="/mis-grupos" replace />;
     }

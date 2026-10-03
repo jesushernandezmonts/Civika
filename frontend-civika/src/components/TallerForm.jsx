@@ -88,7 +88,7 @@ function TallerForm({ taller, onClose, onSave }) {
     if (fieldErrors[fieldName]) {
       return `${base} border-rose-500/50 focus:border-rose-500/60 focus:ring-rose-500/20 hover:border-rose-500/60`;
     }
-    return `${base} border-white/15 focus:border-pink-500/60 focus:ring-pink-500/15 hover:border-white/30`;
+    return `${base} border-white/15 focus:border-purple-500/60 focus:ring-purple-500/15 hover:border-white/30`;
   };
 
   return (
@@ -99,7 +99,7 @@ function TallerForm({ taller, onClose, onSave }) {
           Nombre del Taller <span className="text-rose-400">*</span>
         </label>
         <div className="relative">
-          <Music size={16} className={`absolute left-3.5 top-1/2 -translate-y-1/2 ${fieldErrors.nombreTaller ? 'text-rose-400/70' : 'text-pink-400/70'}`} />
+          <Music size={16} className={`absolute left-3.5 top-1/2 -translate-y-1/2 ${fieldErrors.nombreTaller ? 'text-rose-400/70' : 'text-purple-400/70'}`} />
           <input
             name="nombreTaller"
             placeholder="Ej. Violín, Pintura, Teatro"
@@ -122,13 +122,13 @@ function TallerForm({ taller, onClose, onSave }) {
           Descripción
         </label>
         <div className="relative">
-          <FileText size={16} className="absolute left-3.5 top-3.5 text-pink-400/70" />
+          <FileText size={16} className="absolute left-3.5 top-3.5 text-purple-400/70" />
           <textarea
             name="descripcion"
             placeholder="Breve descripción de los temas o el taller..."
             value={form.descripcion}
             onChange={handleChange}
-            className="bg-slate-800/80 border border-white/15 rounded-xl pl-11 pr-4 py-3 w-full text-white placeholder-white/25 focus:outline-none focus:border-pink-500/60 focus:ring-2 focus:ring-pink-500/15 text-sm transition-all duration-200 hover:border-white/30 resize-none"
+            className="bg-slate-800/80 border border-white/15 rounded-xl pl-11 pr-4 py-3 w-full text-white placeholder-white/25 focus:outline-none focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/15 text-sm transition-all duration-200 hover:border-white/30 resize-none"
             rows="3"
           />
         </div>
@@ -209,7 +209,7 @@ function TallerForm({ taller, onClose, onSave }) {
             id="activo"
             checked={form.activo}
             onChange={(e) => setForm({ ...form, activo: e.target.checked })}
-            className="w-4 h-4 rounded text-pink-600 bg-slate-900/80 border-white/15 focus:ring-pink-500 cursor-pointer"
+            className="w-4 h-4 rounded text-purple-600 bg-slate-900/80 border-white/15 focus:ring-purple-500 cursor-pointer"
           />
           <label htmlFor="activo" className="text-sm font-semibold text-white/90 cursor-pointer select-none">
             Taller Activo (Disponible para inscripciones)
@@ -238,7 +238,7 @@ function TallerForm({ taller, onClose, onSave }) {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2.5 bg-pink-600 hover:bg-pink-500 disabled:bg-pink-600/50 rounded-xl text-white text-sm font-black transition-all duration-200 shadow-lg shadow-pink-600/25 hover:shadow-pink-500/35 disabled:shadow-none ring-1 ring-pink-400/20 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 rounded-xl text-white text-sm font-black transition-all duration-200 shadow-lg shadow-purple-600/25 hover:shadow-purple-500/35 disabled:shadow-none ring-1 ring-purple-400/20 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {loading ? (
               <>

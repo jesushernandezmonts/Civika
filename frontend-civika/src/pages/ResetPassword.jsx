@@ -74,12 +74,19 @@ function ResetPassword() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden font-['Outfit']">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-900/60 via-purple-900/60 to-orange-900/60 z-10" />
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/huamantla-bg.jpg')" }}
+      {/* Fondo Abstracto Moderno Tech - Colegio Cívika */}
+      <div className="absolute inset-0 z-0 bg-slate-950">
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/30 rounded-full filter blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-600/25 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/20 rounded-full filter blur-[140px]" />
+        <div 
+          className="absolute inset-0 opacity-[0.18]"
+          style={{ 
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(168, 85, 247, 0.4) 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }} 
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />
       </div>
 
       <motion.div
@@ -95,7 +102,7 @@ function ResetPassword() {
               Volver al login
             </Link>
             <h1 className="text-3xl font-black text-white mb-2 tracking-tight">Nueva Contraseña</h1>
-            <p className="text-white/60 text-sm">Crea una contraseña segura. Este enlace expira en <span className="text-pink-400 font-semibold">15 minutos</span>.</p>
+            <p className="text-white/60 text-sm">Crea una contraseña segura. Este enlace expira en <span className="text-purple-400 font-semibold">15 minutos</span>.</p>
           </div>
 
           {!success ? (
@@ -118,9 +125,9 @@ function ResetPassword() {
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-white/80 ml-1 flex">Nueva Contraseña</label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-pink-400 transition-colors" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-purple-400 transition-colors" />
                   <input
-                    className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-4 text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 focus:bg-slate-800/95 transition-all"
+                    className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-4 text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 focus:bg-slate-800/95 transition-all"
                     type={showPassword ? "text" : "password"}
                     placeholder="Elige una contraseña segura"
                     value={password}
@@ -165,9 +172,9 @@ function ResetPassword() {
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-white/80 ml-1 flex">Confirmar Contraseña</label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-pink-400 transition-colors" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-purple-400 transition-colors" />
                   <input
-                    className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-4 text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 focus:bg-slate-800/95 transition-all"
+                    className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-4 text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 focus:bg-slate-800/95 transition-all"
                     type={showPassword ? "text" : "password"}
                     placeholder="Repite tu contraseña"
                     value={confirmPassword}
@@ -198,7 +205,7 @@ function ResetPassword() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 disabled={loading}
-                className="w-full h-14 bg-gradient-to-r from-pink-600 to-orange-600 rounded-2xl font-bold text-white transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl font-bold text-white transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-60"
                 type="submit"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Restablecer Contraseña"}
@@ -217,7 +224,7 @@ function ResetPassword() {
               <p className="text-white/60 text-sm mb-4">
                 Tu contraseña ha sido restablecida correctamente. Ya puedes iniciar sesión con tus nuevas credenciales. Redirigiendo...
               </p>
-              <Link to="/login" className="text-pink-400 hover:text-pink-300 font-bold transition-colors">
+              <Link to="/login" className="text-purple-400 hover:text-purple-300 font-bold transition-colors">
                 Ir al inicio de sesión ahora
               </Link>
             </motion.div>

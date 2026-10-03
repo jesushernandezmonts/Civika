@@ -107,14 +107,14 @@ function ModalJustificante({ isOpen, onClose, onSuccess, talleres = [] }) {
           {/* Fecha de la falta */}
           <div className="space-y-1">
             <label className="text-[10px] font-black uppercase text-white/50 tracking-wider flex items-center gap-1">
-              <Calendar size={12} /> Fecha de Falta <span className="text-pink-500">*</span>
+              <Calendar size={12} /> Fecha de Falta <span className="text-purple-400">*</span>
             </label>
             <input
               type="date"
               value={fechaFalta}
               onChange={(e) => setFechaFalta(e.target.value)}
               required
-              className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white w-full outline-none focus:border-pink-500/50 transition"
+              className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white w-full outline-none focus:border-purple-500/50 transition"
             />
           </div>
 
@@ -126,7 +126,7 @@ function ModalJustificante({ isOpen, onClose, onSuccess, talleres = [] }) {
             <select
               value={tallerId}
               onChange={(e) => setTallerId(e.target.value)}
-              className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white w-full outline-none focus:border-pink-500/50 transition cursor-pointer"
+              className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white w-full outline-none focus:border-purple-500/50 transition cursor-pointer"
             >
               <option value="" className="bg-slate-900 text-white">Todos los talleres / General</option>
               {talleres.map((t) => (
@@ -141,7 +141,7 @@ function ModalJustificante({ isOpen, onClose, onSuccess, talleres = [] }) {
         {/* Motivo de la falta */}
         <div className="space-y-1">
           <label className="text-[10px] font-black uppercase text-white/50 tracking-wider flex items-center gap-1">
-            <FileText size={12} /> Motivo o Causa de la Falta <span className="text-pink-500">*</span>
+            <FileText size={12} /> Motivo o Causa de la Falta <span className="text-purple-400">*</span>
           </label>
           <textarea
             value={motivo}
@@ -149,7 +149,7 @@ function ModalJustificante({ isOpen, onClose, onSuccess, talleres = [] }) {
             required
             rows="3"
             placeholder="Describe la causa (ej. Cita médica en ISSSTE, trámite oficial, urgencia familiar...)"
-            className="bg-slate-800/80 border border-white/15 rounded-xl p-3 text-sm text-white placeholder-white/25 w-full outline-none focus:border-pink-500/50 transition resize-none"
+            className="bg-slate-800/80 border border-white/15 rounded-xl p-3 text-sm text-white placeholder-white/25 w-full outline-none focus:border-purple-500/50 transition resize-none"
           />
         </div>
 
@@ -161,7 +161,7 @@ function ModalJustificante({ isOpen, onClose, onSuccess, talleres = [] }) {
           <div className="bg-slate-800/80 border border-white/15 rounded-xl p-3 flex items-center justify-between gap-3 hover:border-white/25 transition">
             <div className="min-w-0 flex-1">
               {archivo ? (
-                <span className="text-xs text-pink-400 font-bold truncate block" title={archivo.name}>
+                <span className="text-xs text-purple-400 font-bold truncate block" title={archivo.name}>
                   ✓ Adjunto: {archivo.name}
                 </span>
               ) : (
@@ -191,7 +191,7 @@ function ModalJustificante({ isOpen, onClose, onSuccess, talleres = [] }) {
                   />
                   <label
                     htmlFor="comprobante-justificante-input"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase bg-pink-600/20 border border-pink-500/30 text-pink-300 hover:bg-pink-600/30 transition cursor-pointer select-none"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 transition cursor-pointer select-none"
                   >
                     <Upload size={14} /> Adjuntar
                   </label>
@@ -213,7 +213,7 @@ function ModalJustificante({ isOpen, onClose, onSuccess, talleres = [] }) {
           <button
             type="submit"
             disabled={loading || !fechaFalta || !motivo.trim()}
-            className="px-6 py-2.5 bg-pink-600 hover:bg-pink-700 disabled:opacity-50 text-white rounded-xl font-black tracking-wider transition shadow-lg shadow-pink-600/20 text-xs flex items-center gap-2 cursor-pointer"
+            className="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white rounded-xl font-black tracking-wider transition shadow-lg shadow-purple-600/20 text-xs flex items-center gap-2 cursor-pointer"
           >
             {loading ? (
               <><Loader2 size={14} className="animate-spin" /> Enviando...</>

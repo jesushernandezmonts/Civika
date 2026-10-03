@@ -1,4 +1,4 @@
-name: tlapalli
+name: civika
 service:
   name: backend
   port: 3000

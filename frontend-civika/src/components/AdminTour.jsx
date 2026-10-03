@@ -11,86 +11,63 @@ import {
   LayoutDashboard,
   Users,
   UserSquare2,
-  Palette,
-  ClipboardCheck,
   BarChart3,
-  MapPin,
-  HeartHandshake,
-  ShieldCheck,
-  Lock
+  Receipt,
+  Megaphone,
+  CreditCard,
+  ShieldCheck
 } from 'lucide-react';
+import { APP_CONFIG } from '../config/appConfig';
 
 const ADMIN_TOUR_STEPS = [
   {
     target: null, // Modal central de bienvenida
-    title: '¡Bienvenido(a) Administrador(a)!',
-    description: 'Te damos la bienvenida al panel de administración de TLAPALLI. Tienes el control total sobre los talleres, alumnos, profesores, reportes y configuraciones del sistema.',
+    title: `¡Bienvenida a ${APP_CONFIG.appName}, Dirección General!`,
+    description: 'Te damos la bienvenida al panel directivo. Desde aquí supervisas los ingresos financieros en tiempo real, validas los cortes de caja entregados por secretaría y emites avisos escolares.',
     icon: Sparkles,
-    badge: 'Paso 1 de 10',
+    badge: 'PASO 1 DE 7',
   },
   {
     target: '[data-tour="sidebar-dashboard"]',
-    title: 'Dashboard General',
-    description: 'Consulta métricas y estadísticas clave en tiempo real: total de alumnos inscritos, instructores activos, asistencia general y accesos rápidos.',
+    title: 'Finanzas & Inicio',
+    description: 'Consulta métricas y estadísticas clave: total recaudado, desglose de colegiaturas vs uniformes, total de alumnos activos y avisos de cortes pendientes por validar.',
     icon: LayoutDashboard,
-    badge: 'Paso 2 de 10',
+    badge: 'PASO 2 DE 7',
   },
   {
     target: '[data-tour="sidebar-alumnos"]',
-    title: 'Gestión de Alumnos',
-    description: 'Registra nuevos estudiantes, edita su información personal, consulta documentos y gestiona el estatus de inscripción.',
+    title: 'Directorio de Alumnos',
+    description: 'Consulta el censo de estudiantes por grado (Secundaria y Preparatoria), su matrícula oficial, expediente digital y datos de contacto de sus tutores.',
     icon: Users,
-    badge: 'Paso 3 de 10',
+    badge: 'PASO 3 DE 7',
   },
   {
-    target: '[data-tour="sidebar-instructores"]',
-    title: 'Instructores y Profesores',
-    description: 'Administra la plantilla de profesores, genera credenciales de acceso, asigna correos institucionales y supervisa sus asignaciones.',
+    target: '[data-tour="sidebar-cortes-direccion"]',
+    title: 'Validación de Cortes de Caja',
+    description: 'Cada vez que la secretaria te entregue el dinero físico recaudado del día, aquí podrás revisar el desglose y presionar "Confirmar Recepción de Efectivo" para cerrar el arqueo con sello de auditoría.',
+    icon: Receipt,
+    badge: 'PASO 4 DE 7',
+  },
+  {
+    target: '[data-tour="sidebar-avisos-escolares"]',
+    title: 'Avisos y Circulares Escolares',
+    description: 'Publica circulares escolares para toda la escuela o por grados específicos con nivel de prioridad (Normal, Alta, Urgente), visibles inmediatamente para tutores y alumnos.',
+    icon: Megaphone,
+    badge: 'PASO 5 DE 7',
+  },
+  {
+    target: '[data-tour="sidebar-secretarias"]',
+    title: 'Cuentas de Secretarias',
+    description: 'Administra los accesos y credenciales del personal de ventanilla, recepción y caja.',
     icon: UserSquare2,
-    badge: 'Paso 4 de 10',
-  },
-  {
-    target: '[data-tour="sidebar-talleres"]',
-    title: 'Catálogo de Talleres',
-    description: 'Crea y edita la oferta de talleres culturales/artísticos, configura cupos disponibles, horarios, áreas y costos.',
-    icon: Palette,
-    badge: 'Paso 5 de 10',
-  },
-  {
-    target: '[data-tour="sidebar-asistencia-admin"]',
-    title: 'Supervisión de Asistencias y Desbloqueos',
-    description: 'Monitorea el pase de lista de todos los grupos. Desde aquí podrás administrar el **desbloqueo de profesores** que acumularon 2 omisiones de lista.',
-    warning: 'Recuerda que si un profesor acumula 2 faltas al pasar lista, el sistema bloquea su cuenta por seguridad. Solo el rol de Administrador puede realizar el desbloqueo tras validar la situación.',
-    icon: ClipboardCheck,
-    badge: 'Paso 6 de 10',
+    badge: 'PASO 6 DE 7',
   },
   {
     target: '[data-tour="sidebar-reportes"]',
-    title: 'Módulo de Reportes',
-    description: 'Genera e imprime reportes consolidados en formato PDF o listas ejecutivas sobre inscripciones, asistencias y rendimiento general.',
+    title: 'Reportes Financieros',
+    description: 'Genera e imprime reportes consolidados en formato PDF o listas ejecutivas sobre colegiaturas, venta de uniformes y arqueos históricos de caja.',
     icon: BarChart3,
-    badge: 'Paso 7 de 10',
-  },
-  {
-    target: '[data-tour="sidebar-mapeo"]',
-    title: 'Mapeo Territorial',
-    description: 'Visualiza la geolocalización de talleres y la distribución geográfica de los estudiantes registrados en Huamantla.',
-    icon: MapPin,
-    badge: 'Paso 8 de 10',
-  },
-  {
-    target: '[data-tour="sidebar-servicio-social"]',
-    title: 'Servicio Social',
-    description: 'Administra a los prestadores de servicio social, registra sus horas cumplidas y supervisa la expedición de constancias.',
-    icon: HeartHandshake,
-    badge: 'Paso 9 de 10',
-  },
-  {
-    target: '[data-tour="sidebar-help-tour"]',
-    title: 'Centro de Ayuda y Reinicio',
-    description: 'Esta guía automática se mostrará solo 1 vez en tu primera visita. Si deseas volver a consultarla en el futuro, haz clic en este botón en cualquier momento.',
-    icon: HelpCircle,
-    badge: 'Paso 10 de 10',
+    badge: 'PASO 7 DE 7',
   },
 ];
 
@@ -100,7 +77,7 @@ export default function AdminTour({ forceOpen = false, onCloseForce }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [targetRect, setTargetRect] = useState(null);
 
-  const storageKey = user?.id ? `tlapalli_admin_tour_count_${user.id}` : 'tlapalli_admin_tour_count';
+  const storageKey = user?.id ? `civika_admin_tour_count_${user.id}` : 'civika_admin_tour_count';
 
   // Manejar apertura automática o forzada
   useEffect(() => {
@@ -215,6 +192,20 @@ export default function AdminTour({ forceOpen = false, onCloseForce }) {
     if (onCloseForce) onCloseForce();
   };
 
+  // Destacar el elemento en el DOM mientras está activo en el paso actual
+  useEffect(() => {
+    if (!isOpen) return;
+    const step = ADMIN_TOUR_STEPS[currentStep];
+    if (!step?.target) return;
+    const el = document.querySelector(step.target);
+    if (el) {
+      el.classList.add('civika-tour-active');
+      return () => {
+        el.classList.remove('civika-tour-active');
+      };
+    }
+  }, [isOpen, currentStep]);
+
   if (!isOpen) return null;
 
   const step = ADMIN_TOUR_STEPS[currentStep];
@@ -248,22 +239,51 @@ export default function AdminTour({ forceOpen = false, onCloseForce }) {
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-auto">
-        {/* Fondo translúcido oscuro con desenfoque */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-slate-950/75 backdrop-blur-sm transition-all"
-          onClick={handleSkip}
-        />
+        {/* Fondo oscuro: si hay un objetivo seleccionado, se recorta un hueco para que el botón no quede tapado ni borroso */}
+        {!isCentered && targetRect ? (
+          <svg className="fixed inset-0 w-full h-full pointer-events-none z-0">
+            <defs>
+              <mask id="admin-tour-spotlight-mask">
+                <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                <rect
+                  x={targetRect.left - 6}
+                  y={targetRect.top - 6}
+                  width={targetRect.width + 12}
+                  height={targetRect.height + 12}
+                  rx="16"
+                  ry="16"
+                  fill="black"
+                />
+              </mask>
+            </defs>
+            <rect
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              fill="rgba(2, 6, 23, 0.82)"
+              mask="url(#admin-tour-spotlight-mask)"
+              className="pointer-events-auto cursor-pointer"
+              onClick={handleSkip}
+            />
+          </svg>
+        ) : (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-all"
+            onClick={handleSkip}
+          />
+        )}
 
-        {/* Resplandor neón sobre el objetivo */}
+        {/* Resplandor neón sobre el objetivo (100% transparente al interior) */}
         {!isCentered && targetRect && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="absolute rounded-2xl pointer-events-none ring-4 ring-pink-500/80 shadow-[0_0_35px_rgba(236,72,153,0.6)] bg-pink-500/10 z-10 transition-all duration-300"
+            className="absolute rounded-2xl pointer-events-none ring-2 ring-purple-400 shadow-[0_0_35px_rgba(168,85,247,0.7)] bg-transparent z-10 transition-all duration-300"
             style={{
               top: targetRect.top - 6,
               left: targetRect.left - 6,
@@ -283,14 +303,14 @@ export default function AdminTour({ forceOpen = false, onCloseForce }) {
             transition={{ duration: 0.25 }}
             style={isCentered ? {} : tooltipStyle}
             className={`
-              z-20 w-full max-w-md bg-slate-900/95 border border-pink-500/30 rounded-3xl p-6 shadow-2xl backdrop-blur-xl text-white
+              z-20 w-full max-w-md bg-slate-900/95 border border-purple-500/30 rounded-3xl p-6 shadow-2xl shadow-purple-950/50 backdrop-blur-xl text-white
               ${isCentered ? 'relative mx-auto' : 'fixed'}
             `}
           >
             {/* Cabecera */}
             <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-full text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5">
-                <ShieldCheck size={12} className="text-pink-400" />
+              <span className="px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+                <ShieldCheck size={12} className="text-purple-400" />
                 {step.badge}
               </span>
               <button
@@ -304,9 +324,9 @@ export default function AdminTour({ forceOpen = false, onCloseForce }) {
 
             {/* Contenido */}
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-500 p-[2px] flex-shrink-0 shadow-lg shadow-pink-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 p-[2px] flex-shrink-0 shadow-lg shadow-purple-500/25">
                 <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
-                  <StepIcon size={22} className="text-pink-400" />
+                  <StepIcon size={22} className="text-purple-400" />
                 </div>
               </div>
               <div>
@@ -334,7 +354,7 @@ export default function AdminTour({ forceOpen = false, onCloseForce }) {
             {/* Barra de progreso */}
             <div className="w-full bg-slate-800/80 rounded-full h-1.5 mb-6 overflow-hidden">
               <motion.div 
-                className="bg-gradient-to-r from-pink-500 to-orange-500 h-full rounded-full"
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${((currentStep + 1) / ADMIN_TOUR_STEPS.length) * 100}%` }}
                 transition={{ duration: 0.3 }}
@@ -362,7 +382,7 @@ export default function AdminTour({ forceOpen = false, onCloseForce }) {
 
                 <button
                   onClick={handleNext}
-                  className="flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-pink-600 to-orange-600 hover:from-pink-500 hover:to-orange-500 text-white rounded-xl text-xs font-black shadow-lg shadow-pink-600/30 transition cursor-pointer"
+                  className="flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-black shadow-lg shadow-purple-600/30 transition cursor-pointer"
                 >
                   {currentStep === ADMIN_TOUR_STEPS.length - 1 ? (
                     <>Entendido <CheckCircle2 size={14} /></>

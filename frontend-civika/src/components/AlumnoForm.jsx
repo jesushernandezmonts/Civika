@@ -42,6 +42,11 @@ const emptyForm = {
   padecimientos: '',
   barrioComunidad: '',
   estatusActivo: true,
+  matricula: '',
+  grado: 'Secundaria 1°',
+  nombreTutor: '',
+  telefonoTutor: '',
+  emailTutor: '',
 };
 
 const emptyArchivos = {
@@ -87,6 +92,11 @@ function AlumnoForm({ alumno, onClose, onSave, modoProfesor = false }) {
         padecimientos: alumno.padecimientos || '',
         barrioComunidad: alumno.barrioComunidad || '',
         estatusActivo: alumno.estatusActivo ?? true,
+        matricula: alumno.matricula || '',
+        grado: alumno.grado || 'Secundaria 1°',
+        nombreTutor: alumno.nombreTutor || '',
+        telefonoTutor: alumno.telefonoTutor || '',
+        emailTutor: alumno.emailTutor || '',
       });
       fetchInscripcionesAlumno(alumno.id);
       fetchDocumentosAlumno(alumno.id);
@@ -446,6 +456,73 @@ function AlumnoForm({ alumno, onClose, onSave, modoProfesor = false }) {
               onChange={handleChange}
               className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white placeholder-white/20 w-full focus:border-pink-500/50 outline-none transition"
             />
+          </div>
+
+          {/* Datos Escolares y Tutor (Colegio Cívika) */}
+          <div className="md:col-span-4 p-4 rounded-2xl bg-purple-950/20 border border-purple-500/20 grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div className="md:col-span-4">
+              <span className="text-xs font-black text-purple-300 tracking-wider uppercase">
+                🎓 Información Escolar & Tutor (Colegio Cívika)
+              </span>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-white/50 uppercase font-black px-1">Matrícula</label>
+              <input
+                name="matricula"
+                placeholder="Ej. CIK-2026-001"
+                value={form.matricula}
+                onChange={handleChange}
+                className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white placeholder-white/20 w-full outline-none focus:border-purple-500/50 transition"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-white/50 uppercase font-black px-1">Grado Escolar</label>
+              <select
+                name="grado"
+                value={form.grado}
+                onChange={handleChange}
+                className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white w-full outline-none focus:border-purple-500/50 transition cursor-pointer"
+              >
+                <option value="Secundaria 1°" className="bg-slate-900">Secundaria 1°</option>
+                <option value="Secundaria 2°" className="bg-slate-900">Secundaria 2°</option>
+                <option value="Secundaria 3°" className="bg-slate-900">Secundaria 3°</option>
+                <option value="Preparatoria 1°" className="bg-slate-900">Preparatoria 1°</option>
+                <option value="Preparatoria 2°" className="bg-slate-900">Preparatoria 2°</option>
+                <option value="Preparatoria 3°" className="bg-slate-900">Preparatoria 3°</option>
+              </select>
+            </div>
+            <div className="space-y-1 md:col-span-2">
+              <label className="text-[10px] text-white/50 uppercase font-black px-1">Nombre Completo del Tutor</label>
+              <input
+                name="nombreTutor"
+                placeholder="Nombre del padre de familia o tutor"
+                value={form.nombreTutor}
+                onChange={handleChange}
+                className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white placeholder-white/20 w-full outline-none focus:border-purple-500/50 transition"
+              />
+            </div>
+            <div className="space-y-1 md:col-span-2">
+              <label className="text-[10px] text-white/50 uppercase font-black px-1">Teléfono del Tutor</label>
+              <input
+                name="telefonoTutor"
+                placeholder="10 dígitos de contacto"
+                value={form.telefonoTutor}
+                onChange={handleChange}
+                maxLength={10}
+                className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white placeholder-white/20 w-full outline-none focus:border-purple-500/50 transition"
+              />
+            </div>
+            <div className="space-y-1 md:col-span-2">
+              <label className="text-[10px] text-white/50 uppercase font-black px-1">Correo Electrónico del Tutor</label>
+              <input
+                name="emailTutor"
+                type="email"
+                placeholder="tutor@ejemplo.com"
+                value={form.emailTutor}
+                onChange={handleChange}
+                className="bg-slate-800/80 border border-white/15 rounded-xl px-3 py-2 text-sm text-white placeholder-white/20 w-full outline-none focus:border-purple-500/50 transition"
+              />
+            </div>
           </div>
           {!modoProfesor && (
           <div className="space-y-1 md:col-span-4 relative">

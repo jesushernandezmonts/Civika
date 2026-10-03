@@ -55,7 +55,9 @@ function Instructores() {
     fetchInstructores();
     fetchJustificaciones();
   });
-  useSocket('talleres:updated', fetchTalleres);
+  useSocket('talleres:updated', () => {
+    fetchTalleres();
+  });
 
   useEffect(() => {
     function handleClickOutside(event) {

@@ -78,7 +78,7 @@ export class AuthController {
 
   @Patch('alumno/crear-acceso/:alumnoId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'secretaria')
   async crearAccesoAlumno(
     @Param('alumnoId', ParseIntPipe) alumnoId: number,
     @Body('email') email: string,

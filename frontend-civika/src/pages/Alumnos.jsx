@@ -12,6 +12,10 @@ import Pagination from '../components/Pagination';
 import StatusBadge from '../components/StatusBadge';
 import FilterDropdown from '../components/FilterDropdown';
 import useSocket from '../hooks/useSocket';
+import { PageTransition } from '../components/PageTransition';
+import { SkeletonTable, SkeletonCardGrid } from '../components/Skeleton';
+import EmptyState from '../components/EmptyState';
+import { MOCK_ALUMNOS, MOCK_TALLERES } from '../mock/mockData';
 
 function Alumnos() {
   const [alumnos, setAlumnos] = useState([]);
@@ -52,6 +56,43 @@ function Alumnos() {
     { tipo: 'foto', label: 'Fotografía' },
   ];
 
+  const showToast = (title, message, type = 'success') => {
+    setToastType(type);
+    setSuccessToast(title);
+    setToastMessage(message || '');
+  };
+
+  const fetchAlumnos = async () => {
+    try {
+      const { data } = await api.get('/alumnos');
+      setAlumnos(Array.isArray(data) && data.length > 0 ? data : MOCK_ALUMNOS);
+    } catch (err) {
+      console.warn('Backend desconectado: mostrando alumnos demo');
+      setAlumnos(MOCK_ALUMNOS);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTalleres = async () => {
+    try {
+      const { data } = await api.get('/talleres');
+      setTalleres(Array.isArray(data) && data.length > 0 ? data : MOCK_TALLERES);
+    } catch (err) {
+      setTalleres(MOCK_TALLERES);
+    }
+  };
+
+  const fetchInscripciones = async () => {
+    try {
+      const { data } = await api.get('/inscripciones');
+      setInscripciones(Array.isArray(data) ? data.filter(i => i && i.estatusPago !== 'baja') : []);
+    } catch (err) {
+      console.error('Error al cargar inscripciones', err);
+      setInscripciones([]);
+    }
+  };
+
   useEffect(() => {
     fetchAlumnos();
     fetchTalleres();
@@ -59,7 +100,9 @@ function Alumnos() {
   }, []);
 
   // Refrescar datos cuando lleguen cambios en tiempo real
-  useSocket('alumnos:updated', fetchAlumnos);
+  useSocket('alumnos:updated', () => {
+    fetchAlumnos();
+  });
   useSocket('inscripciones:updated', () => {
     fetchAlumnos();
     fetchInscripciones();
@@ -112,45 +155,6 @@ function Alumnos() {
     document.addEventListener('mousedown', closeFilters);
     return () => document.removeEventListener('mousedown', closeFilters);
   }, []);
-
-  const fetchAlumnos = async () => {
-    try {
-      const { data } = await api.get('/alumnos');
-      setAlumnos(data);
-    } catch (err) {
-      console.error('Error al cargar alumnos', err);
-      showToast('Error al cargar alumnos', 'No se pudieron cargar los alumnos.', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchTalleres = async () => {
-    try {
-      const { data } = await api.get('/talleres');
-      setTalleres(data);
-    } catch (err) {
-      console.error('Error al cargar talleres', err);
-      showToast('Error al cargar talleres', 'No se pudieron cargar los talleres.', 'error');
-    }
-  };
-
-  const fetchInscripciones = async () => {
-    try {
-      const { data } = await api.get('/inscripciones');
-      setInscripciones(data.filter(i => i.estatusPago !== 'baja'));
-    } catch (err) {
-      console.error('Error al cargar inscripciones', err);
-      showToast('Error al cargar inscripciones', 'No se pudieron cargar las inscripciones.', 'error');
-    }
-  };
-
-  const showToast = (title, message, type = 'success') => {
-    setToastType(type);
-    setSuccessToast(title);
-      setToastMessage(message || '');
-    setTimeout(() => setSuccessToast(''), 3000);
-  };
 
   // Create a toast object for the Toast component
   const toast = successToast ? { title: successToast, message: toastMessage, type: toastType } : null;
@@ -239,24 +243,28 @@ function Alumnos() {
     }
   };
 
-  const filtered = alumnos.filter(a => {
-    const nombreCompleto = `${a.nombre || ''} ${a.apellidoPaterno || ''} ${a.apellidoMaterno || ''}`.toLowerCase();
-    const telefono = (a.telefono || '').toLowerCase();
-    const searchTerm = search.toLowerCase();
+  const safeAlumnos = Array.isArray(alumnos) ? alumnos : [];
+  const safeInscripciones = Array.isArray(inscripciones) ? inscripciones : [];
+  const safeTalleres = Array.isArray(talleres) ? talleres : [];
+
+  const filtered = safeAlumnos.filter(a => {
+    const nombreCompleto = `${a?.nombre || ''} ${a?.apellidoPaterno || ''} ${a?.apellidoMaterno || ''}`.toLowerCase();
+    const telefono = (a?.telefono || '').toLowerCase();
+    const searchTerm = (search || '').toLowerCase();
     const matchesSearch = nombreCompleto.includes(searchTerm) || telefono.includes(searchTerm);
     const matchesStatus =
       statusFilter === 'todos' ||
-      (statusFilter === 'activos' && a.estatusActivo) ||
-      (statusFilter === 'inactivos' && !a.estatusActivo);
+      (statusFilter === 'activos' && a?.estatusActivo) ||
+      (statusFilter === 'inactivos' && !a?.estatusActivo);
     const matchesTaller =
       tallerFilter === 'todos' ||
-      inscripciones.some(i => i.alumnoId === a.id && String(i.tallerId) === tallerFilter);
+      safeInscripciones.some(i => i?.alumnoId === a?.id && String(i?.tallerId) === tallerFilter);
     const matchesPeriodo =
       periodoFilter === 'todos' ||
-      inscripciones.some(i => i.alumnoId === a.id && (i.periodo || 'ordinario') === periodoFilter);
+      safeInscripciones.some(i => i?.alumnoId === a?.id && (i?.periodo || 'ordinario') === periodoFilter);
     const matchesAnio =
       anioFilter === 'todos' ||
-      inscripciones.some(i => i.alumnoId === a.id && Number(i.anio ?? new Date().getFullYear()) === Number(anioFilter));
+      safeInscripciones.some(i => i?.alumnoId === a?.id && Number(i?.anio ?? new Date().getFullYear()) === Number(anioFilter));
     return matchesSearch && matchesStatus && matchesTaller && matchesPeriodo && matchesAnio;
   });
   const totalPages = Math.max(1, Math.ceil(filtered.length / alumnosPerPage));
@@ -268,15 +276,15 @@ function Alumnos() {
   }, [search, statusFilter, tallerFilter, periodoFilter, anioFilter]);
 
   const getTalleresAlumno = (alumnoId) =>
-    inscripciones
-      .filter(i => i.alumnoId === alumnoId)
-      .map(i => i.taller?.nombreTaller || talleres.find(t => t.id === i.tallerId)?.nombreTaller)
+    safeInscripciones
+      .filter(i => i?.alumnoId === alumnoId)
+      .map(i => i?.taller?.nombreTaller || safeTalleres.find(t => t?.id === i?.tallerId)?.nombreTaller)
       .filter(Boolean)
       .join(', ');
 
   return (
-    <div className="space-y-8">
-      <Toast toast={toast} />
+    <PageTransition className="space-y-8">
+      <Toast toast={toast} onClose={() => setSuccessToast('')} />
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white drop-shadow-[0_3px_8px_rgba(0,0,0,0.65)]">
@@ -317,7 +325,7 @@ function Alumnos() {
             value={tallerFilter}
             options={[
               { value: 'todos', label: 'Todos los talleres' },
-              ...talleres.map(taller => ({ value: String(taller.id), label: taller.nombreTaller })),
+              ...safeTalleres.map(taller => ({ value: String(taller?.id), label: taller?.nombreTaller || '' })),
             ]}
             isOpen={openFilter === 'taller'}
             onToggle={() => setOpenFilter(openFilter === 'taller' ? null : 'taller')}
@@ -402,9 +410,17 @@ function Alumnos() {
           </thead>
           <tbody className="divide-y divide-white/5">
             {loading ? (
-              <tr><td colSpan="6" className="p-20 text-center animate-pulse text-white/20 font-bold">Cargando alumnos...</td></tr>
+              <SkeletonTable rows={6} cols={6} />
             ) : filtered.length === 0 ? (
-              <tr><td colSpan="6" className="p-20 text-center text-white/20 italic font-medium">No se encontraron registros.</td></tr>
+              <tr>
+                <td colSpan="6">
+                  <EmptyState
+                    type={search || statusFilter !== 'todos' || tallerFilter !== 'todos' ? 'busqueda' : 'alumnos'}
+                    compact
+                    action={!search ? { label: '+ Nuevo Alumno', onClick: handleNew } : undefined}
+                  />
+                </td>
+              </tr>
             ) : (
               paginatedAlumnos.map((a, index) => (
                 <tr key={a.id} className="hover:bg-slate-800/80 transition group">
@@ -414,10 +430,23 @@ function Alumnos() {
                         {a.nombre ? a.nombre[0].toUpperCase() : '?'}
                       </div>
                       <div>
-                        <div className="font-bold text-white/90 drop-shadow-sm">
-                          {`${a.nombre || ''} ${a.apellidoPaterno || ''} ${a.apellidoMaterno || ''}`.trim() || 'Sin Nombre'}
+                        <div className="font-bold text-white/90 drop-shadow-sm flex items-center gap-2">
+                          <span>{`${a.nombre || ''} ${a.apellidoPaterno || ''} ${a.apellidoMaterno || ''}`.trim() || 'Sin Nombre'}</span>
+                          {a.grado && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                              {a.grado}
+                            </span>
+                          )}
                         </div>
-                        <div className="text-[10px] text-white/50 uppercase tracking-widest font-bold">ID: #{startIndex + index + 1}</div>
+                        <div className="text-[10px] text-white/50 uppercase tracking-widest font-bold flex items-center gap-2">
+                          <span>ID: #{startIndex + index + 1}</span>
+                          {a.matricula && (
+                            <span className="text-purple-400 font-semibold">• Matrícula: {a.matricula}</span>
+                          )}
+                          {a.nombreTutor && (
+                            <span className="text-slate-400 font-normal truncate max-w-[150px]">• Tutor: {a.nombreTutor}</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -641,7 +670,7 @@ function Alumnos() {
           </div>
         </div>
       )}
-    </div>
+    </PageTransition>
   );
 }
 

@@ -10,17 +10,17 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'tlapalli-logo.png'],
+      includeAssets: ['favicon.svg', 'civika-logo.png'],
       manifest: {
-        name: 'TLAPALLI - Centro Cultural',
-        short_name: 'Tlapalli',
-        description: 'Sistema de Gestión Integral para el Centro Cultural Tlapalli',
-        theme_color: '#0f172a',
-        background_color: '#020617',
+        name: 'Colegio Cívika - Sistema Escolar',
+        short_name: 'Cívika',
+        description: 'Sistema de Gestión Escolar para Colegio Cívika',
+        theme_color: '#5b21b6',
+        background_color: '#0f172a',
         display: 'standalone',
         icons: [
           {
-            src: 'tlapalli-logo.png',
+            src: 'civika-logo.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ShieldCheck, Info, Bookmark } from 'lucide-react';
 import api from '../services/api';
 import InstallPwaModal from '../components/InstallPwaModal';
+import { APP_CONFIG } from '../config/appConfig';
 
 function ActivarCuenta() {
   const [searchParams] = useSearchParams();
@@ -78,12 +79,19 @@ function ActivarCuenta() {
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden font-['Outfit']">
       <InstallPwaModal isOpen={showPwaModal} onClose={() => setShowPwaModal(false)} />
 
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-900/60 via-purple-900/60 to-orange-900/60 z-10" />
+      {/* Fondo Abstracto Moderno Tech - Colegio Cívika */}
+      <div className="absolute inset-0 z-0 bg-slate-950">
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/30 rounded-full filter blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-600/25 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/20 rounded-full filter blur-[140px]" />
         <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/huamantla-bg.jpg')" }}
+          className="absolute inset-0 opacity-[0.18]"
+          style={{ 
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(168, 85, 247, 0.4) 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }} 
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />
       </div>
 
       <motion.div
@@ -100,12 +108,12 @@ function ActivarCuenta() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-              className="w-20 h-20 mb-6 rounded-3xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center border border-white/20"
+              className="w-20 h-20 mb-6 rounded-3xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center border border-white/20"
             >
-              <ShieldCheck className="w-10 h-10 text-pink-400" />
+              <ShieldCheck className="w-10 h-10 text-purple-400" />
             </motion.div>
             <h1 className="text-3xl font-black text-white mb-2 tracking-tight text-center">Activa tu Cuenta</h1>
-            <p className="text-white/60 text-sm text-center">Crea una contraseña segura para acceder al sistema Tlapalli.</p>
+            <p className="text-white/60 text-sm text-center">Crea una contraseña segura para acceder al sistema {APP_CONFIG.appName}.</p>
           </div>
 
           {!success ? (
@@ -277,7 +285,7 @@ function ActivarCuenta() {
           transition={{ delay: 1 }}
           className="text-center text-white/40 mt-8 text-sm"
         >
-          © 2026 Tlapalli. Todos los derechos reservados.
+          {APP_CONFIG.copyright}
         </motion.p>
       </motion.div>
     </div>
