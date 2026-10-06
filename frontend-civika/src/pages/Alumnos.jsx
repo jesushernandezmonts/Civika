@@ -47,6 +47,7 @@ function Alumnos() {
   const [accesoAlumno, setAccesoAlumno] = useState(null);
   const [accesoEmail, setAccesoEmail] = useState('');
   const [accesoLoading, setAccesoLoading] = useState(false);
+  const [accesoInvitationLink, setAccesoInvitationLink] = useState(null);
   const alumnosPerPage = 8;
 
   // Documentos obligatorios
@@ -210,7 +211,8 @@ function Alumnos() {
     if (!accesoAlumno || !accesoEmail.trim()) return;
     setAccesoLoading(true);
     try {
-      await api.patch(`/auth/alumno/crear-acceso/${accesoAlumno.id}`, { email: accesoEmail.trim() });
+      const res = await api.patch(`/auth/alumno/crear-acceso/${accesoAlumno.id}`, { email: accesoEmail.trim() });
+      setAccesoInvitationLink(res.data?.activationLink || null);
       setAccesoModalOpen(false);
       setAccesoAlumno(null);
       setAccesoEmail('');
@@ -699,14 +701,20 @@ function Alumnos() {
             </div>
 
             {/* Descripción */}
-            <p className="text-sm text-white/60 leading-relaxed">
-              Se enviará un correo al alumno con un enlace para que active su cuenta y cree su contraseña.
-            </p>
+            <div className="rounded-xl border border-violet-500/30 bg-violet-500/10 p-4">
+              <p className="text-xs font-bold text-violet-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <Mail size={13} /> ¿Cómo accede el padre/tutor?
+              </p>
+              <p className="text-xs text-white/70 leading-relaxed">
+                Al crear el acceso, le llegará un <strong>correo oficial</strong> al Padre de Familia / Tutor.
+                Con el enlace recibido podrá crear su contraseña y ver los recibos y notificaciones del colegio.
+              </p>
+            </div>
 
             {/* Input email */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-white/60 uppercase tracking-wider flex items-center gap-1.5">
-                <Mail size={12} /> Correo electrónico del alumno
+                <Mail size={12} /> Correo electrónico del padre o tutor
               </label>
               <input
                 type="email"
@@ -741,6 +749,32 @@ function Alumnos() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* BANNER ENLACE DE INVITACIÓN (fallback si no llega el correo) */}
+      {accesoInvitationLink && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-lg w-full mx-4"
+        >
+          <div className="bg-slate-900 border border-amber-500/40 rounded-2xl p-4 shadow-2xl">
+            <div className="flex items-start gap-3">
+              <AlertTriangle size={18} className="text-amber-400 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-amber-300 mb-1">Enlace de activación (respaldo)</p>
+                <p className="text-xs text-slate-400 mb-2">Si el correo no llega, comparte este enlace por WhatsApp al padre/tutor:</p>
+                <p className="text-xs text-violet-300 break-all font-mono bg-slate-800 rounded-lg p-2">{accesoInvitationLink}</p>
+              </div>
+              <button
+                onClick={() => setAccesoInvitationLink(null)}
+                className="text-slate-500 hover:text-white transition-colors shrink-0"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
       )}
     </PageTransition>
   );
