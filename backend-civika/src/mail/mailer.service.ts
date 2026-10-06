@@ -12,6 +12,72 @@ try {
   // Ignorar en versiones antiguas de Node
 }
 
+// ─── Paleta de marca Colegio Cívika ──────────────────────────────────────────
+const CIVIKA_BRAND = {
+  headerGradient: 'linear-gradient(135deg, #5b21b6 0%, #3730a3 100%)',
+  gold: '#d97706',
+  goldLight: '#fbbf24',
+  dark: '#1e1b4b',
+  muted: '#6b7280',
+  bodyBg: '#f5f3ff',
+  cardBg: '#ffffff',
+  border: '#ede9fe',
+  btnBg: 'linear-gradient(135deg, #5b21b6 0%, #3730a3 100%)',
+};
+
+function civikaHeader(): string {
+  return `
+    <div style="background:${CIVIKA_BRAND.headerGradient};padding:36px 32px 28px;text-align:center;border-radius:16px 16px 0 0;">
+      <div style="margin-bottom:14px;">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M32 4L8 14V32C8 46.4 18.4 58.3 32 61.6C45.6 58.3 56 46.4 56 32V14L32 4Z" fill="#d97706" opacity="0.25"/>
+          <path d="M32 8L12 17V32C12 44.5 20.9 55.2 32 58.3C43.1 55.2 52 44.5 52 32V17L32 8Z" fill="white" opacity="0.12"/>
+          <text x="32" y="39" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="#fbbf24" text-anchor="middle">C</text>
+        </svg>
+      </div>
+      <h1 style="color:#ffffff;margin:0 0 4px;font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Colegio Cívika</h1>
+      <p style="color:${CIVIKA_BRAND.goldLight};margin:0;font-family:'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;">Portal Escolar Oficial</p>
+    </div>`;
+}
+
+function civikaFooter(): string {
+  return `
+    <div style="background:#ede9fe;padding:20px 32px;border-top:1px solid ${CIVIKA_BRAND.border};border-radius:0 0 16px 16px;text-align:center;">
+      <p style="font-size:11px;color:#9ca3af;margin:0;">
+        &copy; ${new Date().getFullYear()} <strong>Colegio Cívika</strong> &mdash; Todos los derechos reservados.<br>
+        Este mensaje es confidencial y está dirigido únicamente al destinatario indicado.
+      </p>
+    </div>`;
+}
+
+function civikaWrapper(body: string): string {
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Colegio Cívika</title></head>
+  <body style="margin:0;padding:24px 16px;background:${CIVIKA_BRAND.bodyBg};font-family:'Segoe UI',Tahoma,Arial,sans-serif;">
+    <div style="max-width:600px;margin:0 auto;border-radius:16px;overflow:hidden;border:1px solid ${CIVIKA_BRAND.border};box-shadow:0 4px 24px rgba(91,33,182,0.08);">
+      ${civikaHeader()}
+      <div style="padding:40px 32px;background:${CIVIKA_BRAND.cardBg};">${body}</div>
+      ${civikaFooter()}
+    </div>
+  </body></html>`;
+}
+
+function ctaButton(href: string, label: string): string {
+  return `
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${href}" style="background:${CIVIKA_BRAND.btnBg};color:#ffffff;padding:16px 44px;text-decoration:none;border-radius:10px;font-weight:700;font-size:15px;display:inline-block;letter-spacing:0.3px;box-shadow:0 4px 14px rgba(91,33,182,0.35);">${label}</a>
+    </div>
+    <p style="font-size:12px;color:${CIVIKA_BRAND.muted};text-align:center;margin:0 0 4px;">O copia y pega este enlace en tu navegador:</p>
+    <p style="font-size:12px;color:#5b21b6;word-break:break-all;text-align:center;margin:0;">${href}</p>`;
+}
+
+function tipBox(text: string): string {
+  return `
+    <div style="margin-top:28px;padding:16px 20px;background:#f5f3ff;border-left:4px solid ${CIVIKA_BRAND.gold};border-radius:8px;">
+      <p style="margin:0 0 4px;font-size:13px;color:#4c1d95;font-weight:600;">💡 Consejo</p>
+      <p style="margin:0;font-size:12px;color:#5b21b6;line-height:1.5;">${text}</p>
+    </div>`;
+}
+
 @Injectable()
 export class MailerService {
   private transporter: nodemailer.Transporter | null = null;
@@ -58,17 +124,12 @@ export class MailerService {
   }
 
   async sendMail(to: string, subject: string, html: string) {
-    const from = this.configService.get<string>('SMTP_FROM') || 'CIVIKA <jesushernandezmonts@gmail.com>';
+    const from = this.configService.get<string>('SMTP_FROM') || 'Colegio Cívika <jesushernandezmonts@gmail.com>';
 
     // A. Intentar envío directo con Gmail SMTP (Nodemailer)
     if (this.transporter) {
       try {
-        await this.transporter.sendMail({
-          from,
-          to,
-          subject,
-          html,
-        });
+        await this.transporter.sendMail({ from, to, subject, html });
         this.logger.success(`Email enviado exitosamente a ${to} via Gmail SMTP`);
         return;
       } catch (error: any) {
@@ -79,9 +140,8 @@ export class MailerService {
     // B. Fallback a SendGrid
     if (this.sgMail) {
       try {
-        const msg = { to, from, subject, html };
-        await this.sgMail.send(msg);
-        this.logger.success(`Email enviado a ${to} via SendGrid (Fallback)`);
+        await this.sgMail.send({ to, from, subject, html });
+        this.logger.success(`Email enviado a ${to} via SendGrid`);
         return;
       } catch (error: any) {
         this.logger.error(`Error enviando email via SendGrid: ${error.message}`, error.stack, 'MailerService');
@@ -99,7 +159,7 @@ export class MailerService {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'CIVIKA <onboarding@resend.dev>',
+            from: 'Colegio Cívika <onboarding@resend.dev>',
             to: [to],
             subject,
             html,
@@ -129,7 +189,7 @@ export class MailerService {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sender: { name: 'CIVIKA', email: 'jesushernandezmonts@gmail.com' },
+            sender: { name: 'Colegio Cívika', email: 'jesushernandezmonts@gmail.com' },
             to: [{ email: to }],
             subject,
             htmlContent: html,
@@ -160,98 +220,98 @@ export class MailerService {
     const frontendUrl = this.configService.get('FRONTEND_URL');
     const resetUrl = `${frontendUrl}/reset-password?token=${token}`;
 
-    const html = `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 0; border-radius: 16px; overflow: hidden; border: 1px solid #f3e8ff;">
-        <div style="background: linear-gradient(135deg, #db2777, #9333ea); padding: 40px 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">CIVIKA</h1>
-          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Sistema de Gestión Cultural</p>
-        </div>
-        <div style="padding: 40px 30px; background: #fefefe;">
-          <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 16px;">Recuperación de Contraseña</h2>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">Has solicitado restablecer tu contraseña para <strong>CIVIKA</strong>.</p>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">Haz clic en el siguiente botón para crear una nueva contraseña:</p>
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${resetUrl}" style="background: linear-gradient(135deg, #db2777, #9333ea); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block;">Restablecer Contraseña</a>
-          </div>
-          <p style="font-size: 12px; color: #999;">O copia y pega este enlace en tu navegador:</p>
-          <p style="font-size: 12px; color: #db2777; word-break: break-all;">${resetUrl}</p>
-        </div>
-        <div style="background: #f8f4ff; padding: 20px 30px; border-top: 1px solid #f3e8ff;">
-          <p style="font-size: 11px; color: #999; margin: 0;">⏰ Este enlace expirará en 15 minutos. Si no solicitaste esto, puedes ignorar este correo.</p>
-        </div>
-      </div>
-    `;
+    const body = `
+      <h2 style="color:${CIVIKA_BRAND.dark};font-size:22px;margin:0 0 12px;">Restablecer Contraseña</h2>
+      <p style="color:${CIVIKA_BRAND.muted};font-size:15px;line-height:1.7;margin:0 0 8px;">Estimado usuario,</p>
+      <p style="color:${CIVIKA_BRAND.muted};font-size:15px;line-height:1.7;margin:0 0 24px;">
+        Hemos recibido una solicitud para restablecer la contraseña de su cuenta en el
+        <strong>Portal Escolar de Colegio Cívika</strong>. Presione el siguiente botón
+        para crear una contraseña nueva:
+      </p>
+      ${ctaButton(resetUrl, '🔐 Restablecer mi Contraseña')}
+      <p style="font-size:12px;color:#b45309;text-align:center;margin-top:20px;background:#fffbeb;border-radius:8px;padding:10px 16px;">
+        ⏰ Este enlace expirará en <strong>15 minutos</strong>.
+        Si usted no realizó esta solicitud, puede ignorar este mensaje.
+      </p>`;
 
-    await this.sendMail(email, 'Restablecer Contraseña - CIVIKA', html);
+    await this.sendMail(
+      email,
+      'Restablecer Contraseña — Portal Escolar Colegio Cívika',
+      civikaWrapper(body),
+    );
   }
 
   async sendActivationEmail(email: string, token: string, nombre: string, tallerNombre?: string) {
     const frontendUrl = this.configService.get('FRONTEND_URL');
     const activationUrl = `${frontendUrl}/accept-invitation?token=${token}`;
 
-    const tallerText = tallerNombre
-      ? ` como profesor de <strong>${tallerNombre}</strong>`
-      : ' como profesor';
+    const rolTexto = tallerNombre
+      ? `como personal de apoyo en <strong>${tallerNombre}</strong>`
+      : 'como Secretaria del plantel';
 
-    const html = `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 0; border-radius: 16px; overflow: hidden; border: 1px solid #f3e8ff;">
-        <div style="background: linear-gradient(135deg, #db2777, #9333ea); padding: 40px 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">CIVIKA</h1>
-          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Sistema de Gestión Cultural</p>
-        </div>
-        <div style="padding: 40px 30px; background: #fefefe;">
-          <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 16px;">¡Invitación de Profesor!</h2>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">¡Hola, <strong>${nombre}</strong>!</p>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">El administrador de Civika te ha invitado a unirte${tallerText}. Para acceder a tu cuenta, haz clic en el siguiente enlace e inicia sesión con tu cuenta de Google:</p>
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${activationUrl}" style="background: linear-gradient(135deg, #db2777, #9333ea); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block;">Aceptar Invitación y Vincular Google</a>
-          </div>
-          <p style="font-size: 12px; color: #999;">O copia y pega este enlace en tu navegador:</p>
-          <p style="font-size: 12px; color: #db2777; word-break: break-all;">${activationUrl}</p>
-          <div style="margin-top: 24px; padding: 16px; background-color: #fdf2f8; border-left: 4px solid #db2777; border-radius: 8px;">
-            <p style="margin: 0; font-size: 13px; color: #831843; font-weight: 600;">💡 Tip para ingresar diariamente:</p>
-            <p style="margin: 4px 0 0; font-size: 12px; color: #9d174d; line-height: 1.4;">Una vez que actives tu cuenta, te recomendamos guardar la página del sistema (<strong>${frontendUrl}</strong>) en los <strong>Favoritos (⭐)</strong> de tu navegador o agregar el acceso directo a la pantalla de inicio de tu teléfono móvil.</p>
-          </div>
-        </div>
-        <div style="background: #f8f4ff; padding: 20px 30px; border-top: 1px solid #f3e8ff;">
-          <p style="font-size: 11px; color: #999; margin: 0;">⏰ Este enlace expirará en 24 horas. Si no reconoces esta invitación, puedes ignorar este correo.</p>
-        </div>
-      </div>
-    `;
+    const body = `
+      <h2 style="color:${CIVIKA_BRAND.dark};font-size:22px;margin:0 0 12px;">Bienvenida al Sistema Escolar</h2>
+      <p style="color:${CIVIKA_BRAND.muted};font-size:15px;line-height:1.7;margin:0 0 8px;">Estimada <strong>${nombre}</strong>,</p>
+      <p style="color:${CIVIKA_BRAND.muted};font-size:15px;line-height:1.7;margin:0 0 24px;">
+        La Dirección General de <strong>Colegio Cívika</strong> le ha habilitado
+        acceso al <strong>Portal Escolar</strong> ${rolTexto}.
+        Para activar su cuenta e iniciar sesión con su cuenta de Google, presione
+        el siguiente botón:
+      </p>
+      ${ctaButton(activationUrl, '✅ Activar mi Cuenta')}
+      <p style="font-size:12px;color:#b45309;text-align:center;margin-top:20px;background:#fffbeb;border-radius:8px;padding:10px 16px;">
+        ⏰ Este enlace expirará en <strong>24 horas</strong>.
+        Si no reconoce esta invitación, puede ignorar este mensaje.
+      </p>
+      ${tipBox(`Le recomendamos guardar la dirección <strong>${frontendUrl}</strong> en los
+        <strong>Favoritos (⭐)</strong> de su navegador o añadir el acceso directo
+        a la pantalla de inicio de su teléfono para ingresar fácilmente cada día.`)}`;
 
-    await this.sendMail(email, 'Invitación a unirte como Profesor - CIVIKA', html);
+    await this.sendMail(
+      email,
+      'Acceso al Portal Escolar — Colegio Cívika',
+      civikaWrapper(body),
+    );
   }
 
   async sendAlumnoActivationEmail(email: string, token: string, nombre: string) {
     const frontendUrl = this.configService.get('FRONTEND_URL');
     const activationUrl = `${frontendUrl}/alumno/activar-cuenta?token=${token}`;
 
-    const html = `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 0; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
-        <div style="background: linear-gradient(135deg, #7c3aed, #4f46e5); padding: 40px 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">CIVIKA</h1>
-          <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Sistema de Gestión Cultural</p>
-        </div>
-        <div style="padding: 40px 30px; background: #fefefe;">
-          <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 16px;">¡Bienvenido a CIVIKA!</h2>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">¡Hola, <strong>${nombre}</strong>!</p>
-          <p style="color: #555; font-size: 15px; line-height: 1.6;">El administrador te ha registrado en el <strong>Portal del Alumno</strong> de CIVIKA. Para acceder, crea tu contraseña haciendo clic en el siguiente botón:</p>
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${activationUrl}" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block;">Activar mi Cuenta</a>
-          </div>
-          <p style="font-size: 12px; color: #999;">O copia y pega este enlace en tu navegador:</p>
-          <p style="font-size: 12px; color: #7c3aed; word-break: break-all;">${activationUrl}</p>
-          <div style="margin-top: 24px; padding: 16px; background-color: #f3e8ff; border-left: 4px solid #7c3aed; border-radius: 8px;">
-            <p style="margin: 0; font-size: 13px; color: #581c87; font-weight: 600;">💡 Tip para ingresar diariamente:</p>
-            <p style="margin: 4px 0 0; font-size: 12px; color: #6b21a8; line-height: 1.4;">Te recomendamos guardar la dirección (<strong>${frontendUrl}</strong>) en los <strong>Favoritos (⭐)</strong> de tu navegador o añadir el acceso directo a la pantalla de inicio de tu celular.</p>
-          </div>
-        </div>
-        <div style="background: #f8f4ff; padding: 20px 30px; border-top: 1px solid #e5e7eb;">
-          <p style="font-size: 11px; color: #999; margin: 0;">⏰ Este enlace expirará en 7 días. Si no reconoces este registro, puedes ignorar este correo.</p>
-        </div>
+    const body = `
+      <h2 style="color:${CIVIKA_BRAND.dark};font-size:22px;margin:0 0 12px;">Su cuenta en el Portal Escolar está lista</h2>
+      <p style="color:${CIVIKA_BRAND.muted};font-size:15px;line-height:1.7;margin:0 0 8px;">Estimado Padre de Familia / Tutor de <strong>${nombre}</strong>,</p>
+      <p style="color:${CIVIKA_BRAND.muted};font-size:15px;line-height:1.7;margin:0 0 24px;">
+        La Secretaría de <strong>Colegio Cívika</strong> ha registrado a su hijo(a) en el
+        <strong>Portal Escolar</strong>. A través de este portal podrá consultar y descargar los
+        <strong>recibos oficiales de colegiatura</strong>, ver <strong>circulares y avisos
+        escolares</strong>, y mantenerse al día con los pagos del ciclo escolar.
+      </p>
+      <p style="color:${CIVIKA_BRAND.muted};font-size:15px;line-height:1.7;margin:0 0 24px;">
+        Presione el siguiente botón para crear su contraseña de acceso:
+      </p>
+      ${ctaButton(activationUrl, '🏫 Acceder al Portal Escolar')}
+      <div style="margin-top:28px;padding:20px 24px;background:#f5f3ff;border-radius:12px;border:1px solid #ede9fe;">
+        <p style="margin:0 0 12px;font-size:14px;color:${CIVIKA_BRAND.dark};font-weight:700;">📋 ¿Qué encontrará en el Portal?</p>
+        <ul style="margin:0;padding-left:20px;font-size:13px;color:#5b21b6;line-height:1.9;">
+          <li>Recibos oficiales de colegiatura en PDF</li>
+          <li>Historial completo de pagos realizados</li>
+          <li>Circulares y avisos escolares</li>
+          <li>Datos de contacto del plantel</li>
+        </ul>
       </div>
-    `;
+      <p style="font-size:12px;color:#b45309;text-align:center;margin-top:20px;background:#fffbeb;border-radius:8px;padding:10px 16px;">
+        ⏰ Este enlace expirará en <strong>7 días</strong>.
+        Si usted no esperaba este correo, puede ignorarlo con seguridad.
+      </p>
+      ${tipBox(`Guarde la dirección <strong>${frontendUrl}</strong> en los
+        <strong>Favoritos (⭐)</strong> de su navegador para acceder rápidamente
+        cuando necesite consultar un recibo o un aviso escolar.`)}`;
 
-    await this.sendMail(email, 'Activa tu cuenta - Portal del Alumno CIVIKA', html);
+    await this.sendMail(
+      email,
+      'Bienvenido al Portal Escolar — Colegio Cívika',
+      civikaWrapper(body),
+    );
   }
 }
