@@ -1,10 +1,17 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailerService } from '../mail/mailer.service';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CivikaService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailerService: MailerService,
+    private configService: ConfigService,
+  ) {}
 
   // ================= UNIFORMES =================
   async getUniformes() {
@@ -283,9 +290,9 @@ export class CivikaService {
     });
   }
 
-  async createSecretaria(dto: { nombre: string; email: string; password: string; rol?: string }) {
-    if (!dto.nombre || !dto.email || !dto.password) {
-      throw new BadRequestException('Nombre, correo y contraseña son obligatorios.');
+  async createSecretaria(dto: { nombre: string; email: string; rol?: string }) {
+    if (!dto.nombre || !dto.email) {
+      throw new BadRequestException('Nombre y correo son obligatorios.');
     }
     const emailNormalizado = dto.email.trim().toLowerCase();
     const existe = await this.prisma.usuario.findUnique({
@@ -295,14 +302,18 @@ export class CivikaService {
       throw new BadRequestException('Ya existe un usuario registrado con este correo.');
     }
 
-    const passwordHash = await bcrypt.hash(dto.password, 10);
+    // Generar token de invitación (24 horas) — mismo patrón que instructores
+    const invitationToken = crypto.randomBytes(32).toString('hex');
+    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    return this.prisma.usuario.create({
+    const usuario = await this.prisma.usuario.create({
       data: {
         nombre: dto.nombre.trim(),
         email: emailNormalizado,
-        passwordHash,
+        passwordHash: null,   // Sin contraseña hasta que active con Google
         rol: dto.rol || 'secretaria',
+        resetToken: invitationToken,
+        resetTokenExp: tokenExpiry,
       },
       select: {
         id: true,
@@ -313,6 +324,24 @@ export class CivikaService {
         creadoEn: true,
       },
     });
+
+    // Enviar correo de invitación (no bloqueante)
+    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+    const invitationUrl = `${frontendUrl}/accept-invitation?token=${invitationToken}`;
+
+    this.mailerService
+      .sendActivationEmail(emailNormalizado, invitationToken, dto.nombre.trim())
+      .catch((err) => {
+        // Log del enlace como fallback si el correo falla
+        console.error('[CivikaService] Error enviando correo de invitación:', err?.message);
+        console.info(`[CivikaService] 🔗 Enlace de invitación (fallback): ${invitationUrl}`);
+      });
+
+    return {
+      ...usuario,
+      invitationLink: invitationUrl, // Devuelto al admin como respaldo
+      message: 'Invitación enviada por correo. La secretaria debe activar su cuenta con Google.',
+    };
   }
 
   async updateSecretaria(id: number, dto: { nombre?: string; email?: string; password?: string; rol?: string }) {

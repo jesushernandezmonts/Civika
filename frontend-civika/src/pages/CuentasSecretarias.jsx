@@ -39,10 +39,9 @@ export default function CuentasSecretarias() {
   const [formCrear, setFormCrear] = useState({
     nombre: '',
     email: '',
-    password: '',
     rol: 'secretaria',
   });
-  const [showPassCrear, setShowPassCrear] = useState(false);
+  const [invitationLink, setInvitationLink] = useState(null);
 
   // Modal Editar
   const [modalEditarOpen, setModalEditarOpen] = useState(false);
@@ -98,24 +97,28 @@ export default function CuentasSecretarias() {
 
   const handleCrear = async (e) => {
     e.preventDefault();
-    if (!formCrear.nombre.trim() || !formCrear.email.trim() || !formCrear.password.trim()) {
-      showToast('Campos requeridos', 'Por favor llena todos los campos.', 'error');
-      return;
-    }
-    if (formCrear.password.length < 6) {
-      showToast('Contraseña débil', 'La contraseña debe tener mínimo 6 caracteres.', 'error');
+    if (!formCrear.nombre.trim() || !formCrear.email.trim()) {
+      showToast('Campos requeridos', 'Por favor llena el nombre y correo.', 'error');
       return;
     }
 
     try {
       setCreando(true);
-      await api.post('/civika/personal', formCrear);
-      showToast('Secretaria registrada', 'La cuenta ha sido creada exitosamente.');
+      const res = await api.post('/civika/personal', {
+        nombre: formCrear.nombre,
+        email: formCrear.email,
+        rol: formCrear.rol,
+      });
+      setInvitationLink(res.data?.invitationLink || null);
+      showToast(
+        'Invitación enviada ✉️',
+        `Se envió un correo a ${formCrear.email} para que active su cuenta con Google.`
+      );
       setModalCrearOpen(false);
-      setFormCrear({ nombre: '', email: '', password: '', rol: 'secretaria' });
+      setFormCrear({ nombre: '', email: '', rol: 'secretaria' });
       fetchPersonal();
     } catch (err) {
-      showToast('Error', err.response?.data?.message || 'No se pudo crear la cuenta.', 'error');
+      showToast('Error', err.response?.data?.message || 'No se pudo registrar al personal.', 'error');
     } finally {
       setCreando(false);
     }
@@ -494,30 +497,14 @@ export default function CuentasSecretarias() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
-              Contraseña de Acceso:
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-              <input
-                type={showPassCrear ? 'text' : 'password'}
-                required
-                value={formCrear.password}
-                onChange={(e) => setFormCrear({ ...formCrear, password: e.target.value })}
-                placeholder="Mínimo 6 caracteres"
-                className="w-full pl-9 pr-10 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm focus:border-purple-500 focus:outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassCrear(!showPassCrear)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-              >
-                {showPassCrear ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            <p className="text-[11px] text-slate-400 mt-1">
-              La secretaria podrá iniciar sesión con este correo y contraseña para cobrar colegiaturas, vender uniformes y hacer cortes de caja.
+          <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-4">
+            <p className="text-xs font-bold text-purple-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <Mail size={13} /> ¿Cómo accede la secretaria?
+            </p>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Al registrarla, le llegará un <strong>correo de invitación</strong> a su cuenta de Gmail.
+              Ella hace clic en el enlace y activa su cuenta vinculando su <strong>Google</strong>.
+              No necesitas asignarle contraseña.
             </p>
           </div>
 
@@ -534,11 +521,38 @@ export default function CuentasSecretarias() {
               disabled={creando}
               className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition-all flex items-center gap-2"
             >
-              {creando ? 'Creando...' : 'Crear Cuenta'}
+              <Mail size={15} />
+              {creando ? 'Enviando...' : 'Enviar Invitación'}
             </button>
           </div>
         </form>
       </Modal>
+
+      {/* BANNER ENLACE DE INVITACIÓN (fallback si no llega el correo) */}
+      {invitationLink && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-lg w-full mx-4"
+        >
+          <div className="bg-slate-900 border border-amber-500/40 rounded-2xl p-4 shadow-2xl">
+            <div className="flex items-start gap-3">
+              <AlertTriangle size={18} className="text-amber-400 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-amber-300 mb-1">Enlace de activación (respaldo)</p>
+                <p className="text-xs text-slate-400 mb-2">Si el correo no llega, comparte este enlace directamente:</p>
+                <p className="text-xs text-purple-300 break-all font-mono bg-slate-800 rounded-lg p-2">{invitationLink}</p>
+              </div>
+              <button
+                onClick={() => setInvitationLink(null)}
+                className="text-slate-500 hover:text-white transition-colors shrink-0"
+              >
+                <XCircle size={16} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* MODAL EDITAR SECRETARIA */}
       <Modal

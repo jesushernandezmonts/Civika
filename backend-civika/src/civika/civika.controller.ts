@@ -154,7 +154,6 @@ export class CivikaController {
     body: {
       nombre: string;
       email: string;
-      password: string;
       rol?: string;
     },
   ) {
