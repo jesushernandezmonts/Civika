@@ -111,7 +111,7 @@ function Sidebar({ isOpen, onClose }) {
                 </NavLink>
               </div>
               <div data-tour="sidebar-secretarias">
-                <NavLink to="/instructores" onClick={onClose} className={linkClass}>
+                <NavLink to="/secretarias" onClick={onClose} className={linkClass}>
                   <UserSquare2 size={20} />
                   <span className="font-medium">Cuentas de Secretarias</span>
                 </NavLink>

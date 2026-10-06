@@ -321,10 +321,22 @@ export default function AlumnoPagos() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <button
+                onClick={() => {
+                  const msg = reciboModal.tipo === 'colegiatura'
+                    ? `*Colegio Cívika* 🎓\n*Comprobante Oficial de Colegiatura*\nFolio: REC-COL-00${reciboModal.item.id}\nMes: ${reciboModal.item.mesCorrespondiente}\nMonto: $${Number(reciboModal.item.monto).toFixed(2)} MXN\nFecha: ${new Date(reciboModal.item.fechaPago).toLocaleDateString('es-MX')}\n¡Gracias por su pago!`
+                    : `*Colegio Cívika* 🎓\n*Comprobante de Uniformes*\nFolio: ${reciboModal.item.folio}\nTotal: $${Number(reciboModal.item.total).toFixed(2)} MXN\nFecha: ${new Date(reciboModal.item.fecha).toLocaleDateString('es-MX')}\n¡Gracias por su compra!`;
+                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+                }}
+                className="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-emerald-600/25 transition-all text-xs cursor-pointer"
+              >
+                <span>💬 Compartir WhatsApp</span>
+              </button>
+
               <button
                 onClick={() => window.print()}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-purple-600/25 transition-all text-xs cursor-pointer"
+                className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-purple-600/25 transition-all text-xs cursor-pointer"
               >
                 <Printer size={15} />
                 <span>Imprimir Recibo</span>

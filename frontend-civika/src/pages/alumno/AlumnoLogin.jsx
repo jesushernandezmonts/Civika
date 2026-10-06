@@ -71,7 +71,7 @@ function AlumnoLogin() {
               {APP_CONFIG.appName}
             </h1>
             <p className="text-purple-300/80 mt-1 font-bold tracking-widest uppercase text-[10px]">
-              Portal del Alumno — {APP_CONFIG.appSubName}
+              Portal de Padres de Familia & Alumnos — {APP_CONFIG.appName}
             </p>
           </div>
 
@@ -97,15 +97,15 @@ function AlumnoLogin() {
 
             {/* Correo */}
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-white/80 ml-1">Correo</label>
+              <label className="text-sm font-semibold text-white/80 ml-1">Correo Electrónico</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-pink-400 transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-purple-400 transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@correo.com"
-                  className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 focus:bg-slate-800/95 transition-all"
+                  placeholder="tutor@civika.edu.mx"
+                  className="w-full bg-slate-800/90 border border-white/20 rounded-2xl px-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 focus:bg-slate-800/95 transition-all"
                   required
                   autoComplete="email"
                 />
@@ -116,13 +116,13 @@ function AlumnoLogin() {
             <div className="space-y-1">
               <label className="text-sm font-semibold text-white/80 ml-1">Contraseña</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-pink-400 transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-purple-400 transition-colors" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-slate-800/90 border border-white/20 rounded-2xl pl-12 pr-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 focus:bg-slate-800/95 transition-all"
+                  className="w-full bg-slate-800/90 border border-white/20 rounded-2xl pl-12 pr-12 py-3 text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 focus:bg-slate-800/95 transition-all"
                   required
                   autoComplete="current-password"
                 />
@@ -144,12 +144,12 @@ function AlumnoLogin() {
               className="w-full relative group h-12 overflow-hidden rounded-2xl font-bold text-white transition-all shadow-lg disabled:opacity-60"
               type="submit"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-orange-600 to-pink-600 bg-[length:200%_auto] group-hover:bg-right transition-all duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] group-hover:bg-right transition-all duration-500" />
               <span className="relative flex items-center justify-center gap-2">
                 {loading ? (
                   <><Loader2 className="w-5 h-5 animate-spin" /> Iniciando sesión...</>
                 ) : (
-                  <><LogIn className="w-5 h-5" /> Iniciar Sesión</>
+                  <><LogIn className="w-5 h-5" /> Iniciar Sesión en Portal</>
                 )}
               </span>
             </motion.button>
@@ -158,9 +158,9 @@ function AlumnoLogin() {
             <div className="text-center pt-1">
               <Link
                 to="/login"
-                className="text-xs text-white/40 hover:text-pink-400 transition-colors font-medium"
+                className="text-xs text-white/40 hover:text-purple-400 transition-colors font-medium"
               >
-                ← Volver al inicio de sesión principal
+                ← Volver al acceso del personal escolar (Dirección / Secretaría)
               </Link>
             </div>
           </form>

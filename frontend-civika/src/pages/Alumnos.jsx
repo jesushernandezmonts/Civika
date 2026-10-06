@@ -251,9 +251,22 @@ function Alumnos() {
 
   const filtered = safeAlumnos.filter(a => {
     const nombreCompleto = `${a?.nombre || ''} ${a?.apellidoPaterno || ''} ${a?.apellidoMaterno || ''}`.toLowerCase();
+    const matricula = (a?.matricula || '').toLowerCase();
+    const grado = (a?.grado || '').toLowerCase();
+    const tutor = (a?.nombreTutor || '').toLowerCase();
     const telefono = (a?.telefono || '').toLowerCase();
+    const telefonoTutor = (a?.telefonoTutor || '').toLowerCase();
+    const curp = (a?.curp || '').toLowerCase();
     const searchTerm = (search || '').toLowerCase();
-    const matchesSearch = nombreCompleto.includes(searchTerm) || telefono.includes(searchTerm);
+
+    const matchesSearch = 
+      nombreCompleto.includes(searchTerm) || 
+      matricula.includes(searchTerm) ||
+      grado.includes(searchTerm) ||
+      tutor.includes(searchTerm) ||
+      telefono.includes(searchTerm) ||
+      telefonoTutor.includes(searchTerm) ||
+      curp.includes(searchTerm);
     const matchesStatus =
       statusFilter === 'todos' ||
       (statusFilter === 'activos' && a?.estatusActivo) ||

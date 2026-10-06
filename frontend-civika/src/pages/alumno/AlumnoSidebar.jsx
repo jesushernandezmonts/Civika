@@ -44,7 +44,7 @@ function AlumnoSidebar({ isOpen, onClose, alumno, onLogout, tipo }) {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-black tracking-tight text-white leading-tight">{APP_CONFIG.appName}</span>
-              <span className="text-[10px] text-purple-400 font-bold tracking-[0.15em] uppercase leading-none mt-0.5">Portal Alumno</span>
+              <span className="text-[10px] text-purple-400 font-bold tracking-[0.15em] uppercase leading-none mt-0.5">Portal Tutores & Alumnos</span>
             </div>
           </div>
           <button onClick={onClose} className="lg:hidden p-2 text-white/40 hover:text-white rounded-xl hover:bg-slate-800/90 transition">
@@ -52,39 +52,35 @@ function AlumnoSidebar({ isOpen, onClose, alumno, onLogout, tipo }) {
           </button>
         </div>
 
-        {/* Navegación dinámica según el tipo de alumno */}
+        {/* Navegación Colegio Cívika */}
         <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
-          {/* Inicio — siempre visible */}
+          {/* Inicio & Avisos Escolares */}
           <NavLink to="/alumno/dashboard" onClick={onClose} className={linkClass}>
             <LayoutDashboard size={20} />
-            <span className="font-medium">Inicio</span>
+            <span className="font-medium">Inicio & Avisos</span>
           </NavLink>
 
-          {/* Mis Talleres — solo si tiene talleres */}
+          {/* Estado de Pagos y Recibos — Siempre visible para todos los tutores */}
+          <NavLink to="/alumno/pagos" onClick={onClose} className={linkClass}>
+            <CreditCard size={20} />
+            <span className="font-medium">Colegiaturas & Recibos</span>
+          </NavLink>
+
+          {/* Asistencias Escolares */}
+          <NavLink to="/alumno/asistencias" onClick={onClose} className={linkClass}>
+            <ClipboardList size={20} />
+            <span className="font-medium">Asistencia Escolar</span>
+          </NavLink>
+
+          {/* Talleres Extracurriculares — opcional si aplica */}
           {tieneTalleres && (
             <NavLink to="/alumno/talleres" onClick={onClose} className={linkClass}>
               <Palette size={20} />
-              <span className="font-medium">Mis Talleres</span>
+              <span className="font-medium">Talleres Artísticos</span>
             </NavLink>
           )}
 
-          {/* Mis Pagos — solo si tiene talleres (pagan por taller) */}
-          {tieneTalleres && (
-            <NavLink to="/alumno/pagos" onClick={onClose} className={linkClass}>
-              <CreditCard size={20} />
-              <span className="font-medium">Mis Pagos</span>
-            </NavLink>
-          )}
-
-          {/* Mi Asistencia — solo si tiene talleres */}
-          {tieneTalleres && (
-            <NavLink to="/alumno/asistencias" onClick={onClose} className={linkClass}>
-              <ClipboardList size={20} />
-              <span className="font-medium">Mi Asistencia</span>
-            </NavLink>
-          )}
-
-          {/* Servicio Social — solo si tiene servicio social */}
+          {/* Servicio Social — solo si aplica para preparatoria */}
           {tieneSS && (
             <NavLink to="/alumno/servicio-social" onClick={onClose} className={linkClass}>
               <HeartHandshake size={20} />

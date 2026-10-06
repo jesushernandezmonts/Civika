@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class CivikaService {
@@ -256,25 +257,275 @@ export class CivikaService {
     });
   }
 
+  // ================= GESTIÓN DE PERSONAL / SECRETARÍAS =================
+  async getPersonalSecretarias() {
+    return this.prisma.usuario.findMany({
+      where: {
+        rol: { in: ['secretaria', 'admin'] },
+      },
+      select: {
+        id: true,
+        nombre: true,
+        email: true,
+        rol: true,
+        fotoUrl: true,
+        bloqueadoHasta: true,
+        creadoEn: true,
+        _count: {
+          select: {
+            cortesCaja: true,
+            pagos: true,
+            ventasUniformes: true,
+          },
+        },
+      },
+      orderBy: { creadoEn: 'desc' },
+    });
+  }
+
+  async createSecretaria(dto: { nombre: string; email: string; password: string; rol?: string }) {
+    if (!dto.nombre || !dto.email || !dto.password) {
+      throw new BadRequestException('Nombre, correo y contraseña son obligatorios.');
+    }
+    const emailNormalizado = dto.email.trim().toLowerCase();
+    const existe = await this.prisma.usuario.findUnique({
+      where: { email: emailNormalizado },
+    });
+    if (existe) {
+      throw new BadRequestException('Ya existe un usuario registrado con este correo.');
+    }
+
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+
+    return this.prisma.usuario.create({
+      data: {
+        nombre: dto.nombre.trim(),
+        email: emailNormalizado,
+        passwordHash,
+        rol: dto.rol || 'secretaria',
+      },
+      select: {
+        id: true,
+        nombre: true,
+        email: true,
+        rol: true,
+        fotoUrl: true,
+        creadoEn: true,
+      },
+    });
+  }
+
+  async updateSecretaria(id: number, dto: { nombre?: string; email?: string; password?: string; rol?: string }) {
+    const usuario = await this.prisma.usuario.findUnique({ where: { id } });
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado.');
+    }
+
+    const dataToUpdate: any = {};
+    if (dto.nombre) dataToUpdate.nombre = dto.nombre.trim();
+    if (dto.email) {
+      const emailNormalizado = dto.email.trim().toLowerCase();
+      if (emailNormalizado !== usuario.email) {
+        const existe = await this.prisma.usuario.findUnique({ where: { email: emailNormalizado } });
+        if (existe) {
+          throw new BadRequestException('El correo ya está en uso por otra cuenta.');
+        }
+        dataToUpdate.email = emailNormalizado;
+      }
+    }
+    if (dto.password && dto.password.trim().length > 0) {
+      if (dto.password.length < 6) {
+        throw new BadRequestException('La contraseña debe tener al menos 6 caracteres.');
+      }
+      dataToUpdate.passwordHash = await bcrypt.hash(dto.password, 10);
+      dataToUpdate.intentosFallidos = 0;
+      dataToUpdate.bloqueadoHasta = null;
+    }
+    if (dto.rol) {
+      dataToUpdate.rol = dto.rol;
+    }
+
+    return this.prisma.usuario.update({
+      where: { id },
+      data: dataToUpdate,
+      select: {
+        id: true,
+        nombre: true,
+        email: true,
+        rol: true,
+        fotoUrl: true,
+        creadoEn: true,
+      },
+    });
+  }
+
+  async toggleBloqueoSecretaria(id: number) {
+    const usuario = await this.prisma.usuario.findUnique({ where: { id } });
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado.');
+    }
+
+    const estaBloqueado = Boolean(usuario.bloqueadoHasta && usuario.bloqueadoHasta > new Date());
+
+    if (estaBloqueado) {
+      return this.prisma.usuario.update({
+        where: { id },
+        data: {
+          bloqueadoHasta: null,
+          intentosFallidos: 0,
+        },
+      });
+    } else {
+      return this.prisma.usuario.update({
+        where: { id },
+        data: {
+          bloqueadoHasta: new Date('2099-12-31T23:59:59.000Z'),
+        },
+      });
+    }
+  }
+
+  async deleteSecretaria(id: number) {
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            cortesCaja: true,
+            pagos: true,
+            ventasUniformes: true,
+          },
+        },
+      },
+    });
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado.');
+    }
+
+    if (usuario.rol === 'admin') {
+      throw new BadRequestException('No se puede eliminar la cuenta principal de Dirección.');
+    }
+
+    const tieneRegistros =
+      usuario._count.cortesCaja > 0 || usuario._count.pagos > 0 || usuario._count.ventasUniformes > 0;
+
+    if (tieneRegistros) {
+      return this.prisma.usuario.update({
+        where: { id },
+        data: {
+          bloqueadoHasta: new Date('2099-12-31T23:59:59.000Z'),
+        },
+      });
+    }
+
+    return this.prisma.usuario.delete({ where: { id } });
+  }
+
   // ================= STATS FINANCIERAS DIRECCIÓN =================
   async getStatsCivika() {
-    const [alumnosTotal, totalColegiaturasResult, totalUniformesResult, cortesPendientes] = await Promise.all([
+    const [
+      alumnosTotal,
+      alumnosSecundaria,
+      alumnosPrepa,
+      totalColegiaturasResult,
+      totalUniformesResult,
+      cortesPendientes,
+      pagosRecientes,
+      todosAlumnos,
+    ] = await Promise.all([
       this.prisma.alumno.count({ where: { estatusActivo: true } }),
+      this.prisma.alumno.count({
+        where: {
+          estatusActivo: true,
+          OR: [
+            { grado: { contains: 'Secundaria', mode: 'insensitive' } },
+            { grado: { startsWith: 'Sec', mode: 'insensitive' } },
+          ],
+        },
+      }),
+      this.prisma.alumno.count({
+        where: {
+          estatusActivo: true,
+          OR: [
+            { grado: { contains: 'Prepa', mode: 'insensitive' } },
+            { grado: { contains: 'Bachillerato', mode: 'insensitive' } },
+          ],
+        },
+      }),
       this.prisma.pago.aggregate({ _sum: { monto: true } }),
       this.prisma.ventaUniforme.aggregate({ _sum: { total: true } }),
-      this.prisma.corteCaja.count({ where: { estatus: { in: ['pendiente_entrega', 'entregado_a_direccion'] } } }),
+      this.prisma.corteCaja.count({
+        where: { estatus: { in: ['pendiente_entrega', 'entregado_a_direccion'] } },
+      }),
+      this.prisma.pago.findMany({
+        take: 100,
+        include: { alumno: true },
+        orderBy: { fechaPago: 'desc' },
+      }),
+      this.prisma.alumno.findMany({
+        where: { estatusActivo: true },
+        include: {
+          pagos: {
+            orderBy: { fechaPago: 'desc' },
+            take: 1,
+          },
+        },
+        orderBy: { nombre: 'asc' },
+      }),
     ]);
 
     const totalColegiaturas = Number(totalColegiaturasResult._sum.monto || 0);
     const totalUniformes = Number(totalUniformesResult._sum.total || 0);
     const totalRecaudado = totalColegiaturas + totalUniformes;
 
+    // Desglose de colegiaturas por nivel
+    let colegiaturasSecundaria = 0;
+    let colegiaturasPrepa = 0;
+
+    for (const p of pagosRecientes) {
+      const g = (p.alumno?.grado || '').toLowerCase();
+      if (g.includes('prepa') || g.includes('bachillerato')) {
+        colegiaturasPrepa += Number(p.monto);
+      } else {
+        colegiaturasSecundaria += Number(p.monto);
+      }
+    }
+
+    // Morosidad: alumnos sin pago en los últimos 30 días o sin pagos
+    const ahora = new Date();
+    const hace30Dias = new Date();
+    hace30Dias.setDate(ahora.getDate() - 30);
+
+    const alumnosMorosos = todosAlumnos
+      .filter((a) => {
+        const ultPago = a.pagos[0];
+        if (!ultPago) return true;
+        return new Date(ultPago.fechaPago) < hace30Dias;
+      })
+      .map((a) => ({
+        id: a.id,
+        nombreCompleto: `${a.nombre} ${a.apellidoPaterno} ${a.apellidoMaterno || ''}`.trim(),
+        grado: a.grado || 'Sin Grado',
+        matricula: a.matricula || 'N/A',
+        nombreTutor: a.nombreTutor || 'No registrado',
+        telefonoTutor: a.telefonoTutor || a.telefono || null,
+        emailTutor: a.emailTutor || null,
+        ultimoPagoFecha: a.pagos[0]?.fechaPago || null,
+        ultimoPagoMonto: a.pagos[0]?.monto ? Number(a.pagos[0].monto) : null,
+      }))
+      .slice(0, 20);
+
     return {
       alumnosTotal,
+      alumnosSecundaria,
+      alumnosPrepa,
       totalColegiaturas,
       totalUniformes,
       totalRecaudado,
+      colegiaturasSecundaria,
+      colegiaturasPrepa,
       cortesPendientes,
+      alumnosMorosos,
     };
   }
 }

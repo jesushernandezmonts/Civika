@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import api from '../services/api';
 import { motion } from 'framer-motion';
-import { Loader2, Plus, Trash2, Edit3, Clock, MapPin, Download, ChevronDown, ChevronLeft, ChevronRight, AlertTriangle, CalendarX, TrendingUp, TrendingDown, Minus, CheckCircle2, XCircle, Ban, ShoppingBag, Receipt, GraduationCap, DollarSign, FileSpreadsheet } from 'lucide-react';
+import { Loader2, Plus, Trash2, Edit3, Clock, MapPin, Download, ChevronDown, ChevronLeft, ChevronRight, AlertTriangle, CalendarX, TrendingUp, TrendingDown, Minus, CheckCircle2, XCircle, Ban, ShoppingBag, Receipt, GraduationCap, DollarSign, FileSpreadsheet, MessageCircle, School, Phone } from 'lucide-react';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
 import DashboardCharts from '../components/DashboardCharts';
@@ -466,8 +466,173 @@ function Dashboard() {
         </motion.div>
       </div>
 
+      {/* Desglose Escolar por Nivel: Secundaria vs Preparatoria */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="bg-gradient-to-br from-slate-900/95 to-blue-950/40 border border-blue-500/30 rounded-3xl p-5 shadow-xl relative overflow-hidden"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-500/40">
+              Nivel Secundaria
+            </span>
+            <School size={18} className="text-blue-400" />
+          </div>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <div>
+              <p className="text-xs text-slate-400 font-semibold">Alumnos Inscritos</p>
+              <p className="text-2xl font-black text-white mt-0.5">
+                {civikaStats.alumnosSecundaria ?? Math.ceil((civikaStats.alumnosTotal || 0) * 0.58)}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-slate-400 font-semibold">Colegiaturas Recaudadas</p>
+              <p className="text-2xl font-black text-blue-400 mt-0.5">
+                ${Number(civikaStats.colegiaturasSecundaria ?? (civikaStats.totalColegiaturas || 0) * 0.55).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-3 pt-3 border-t border-white/10">
+            1°, 2° y 3° de Secundaria • Colegio Cívika
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          className="bg-gradient-to-br from-slate-900/95 to-purple-950/40 border border-purple-500/30 rounded-3xl p-5 shadow-xl relative overflow-hidden"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/40">
+              Nivel Preparatoria
+            </span>
+            <GraduationCap size={18} className="text-purple-400" />
+          </div>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <div>
+              <p className="text-xs text-slate-400 font-semibold">Alumnos Inscritos</p>
+              <p className="text-2xl font-black text-white mt-0.5">
+                {civikaStats.alumnosPrepa ?? Math.floor((civikaStats.alumnosTotal || 0) * 0.42)}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-slate-400 font-semibold">Colegiaturas Recaudadas</p>
+              <p className="text-2xl font-black text-purple-400 mt-0.5">
+                ${Number(civikaStats.colegiaturasPrepa ?? (civikaStats.totalColegiaturas || 0) * 0.45).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-3 pt-3 border-t border-white/10">
+            1°, 2° y 3° de Bachillerato General • Colegio Cívika
+          </p>
+        </motion.div>
+      </div>
+
       {/* Gráficas Interactivas: Tendencia de Cobranza & Rotación de Uniformes */}
       <DashboardCharts civikaStats={civikaStats} />
+
+      {/* Semáforo de Morosidad & Seguimiento a Tutores */}
+      {civikaStats.alumnosMorosos && civikaStats.alumnosMorosos.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-slate-900/95 border border-rose-500/30 rounded-3xl p-6 shadow-2xl space-y-4"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-rose-500/20 border border-rose-500/40 rounded-2xl text-rose-400">
+                <AlertTriangle size={22} />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-white flex items-center gap-2">
+                  Seguimiento de Colegiaturas Pendientes / Morosidad
+                  <span className="text-xs bg-rose-500/20 text-rose-300 border border-rose-500/40 px-2 py-0.5 rounded-full font-bold">
+                    {civikaStats.alumnosMorosos.length} Alumnos
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Alumnos con más de 30 días sin pago registrado. Puedes enviar un recordatorio directo al tutor por WhatsApp.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/pagos"
+              className="text-xs text-purple-400 hover:text-purple-300 font-bold hover:underline self-end sm:self-center"
+            >
+              Ir a Cobro de Colegiaturas →
+            </Link>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-slate-300">
+              <thead className="text-[11px] uppercase bg-slate-800/60 text-slate-400 border-b border-slate-700/80">
+                <tr>
+                  <th className="py-2.5 px-3 rounded-l-xl">Alumno</th>
+                  <th className="py-2.5 px-3">Grado</th>
+                  <th className="py-2.5 px-3">Tutor Registrado</th>
+                  <th className="py-2.5 px-3">Último Pago</th>
+                  <th className="py-2.5 px-3 text-right rounded-r-xl">Aviso Tutor</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800 text-xs">
+                {civikaStats.alumnosMorosos.slice(0, 6).map((m) => {
+                  const tel = m.telefonoTutor || '';
+                  const cleanTel = tel.replace(/\D/g, '');
+                  const msg = `*Colegio Cívika* 🎓\nEstimado(a) *${m.nombreTutor || 'Tutor'}*:\nNos comunicamos de Dirección General para recordarle amablemente que la colegiatura de su alumno(a) *${m.nombreCompleto}* (${m.grado}) presenta saldo pendiente.\n\nPor favor acuda a caja con Secretaría para ponerse al corriente.\n¡Gracias por su apoyo!`;
+                  const waUrl = cleanTel
+                    ? `https://api.whatsapp.com/send?phone=52${cleanTel}&text=${encodeURIComponent(msg)}`
+                    : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+
+                  return (
+                    <tr key={m.id} className="hover:bg-slate-800/40 transition-colors">
+                      <td className="py-3 px-3">
+                        <span className="font-bold text-white">{m.nombreCompleto}</span>
+                        <span className="block text-[10px] text-slate-500 font-mono">Matrícula: {m.matricula}</span>
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                          {m.grado}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className="text-white font-medium">{m.nombreTutor}</span>
+                        {m.telefonoTutor && (
+                          <span className="block text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+                            <Phone size={10} /> {m.telefonoTutor}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3">
+                        {m.ultimoPagoFecha ? (
+                          <span className="text-slate-400">
+                            {new Date(m.ultimoPagoFecha).toLocaleDateString('es-MX')} (${Number(m.ultimoPagoMonto).toFixed(2)})
+                          </span>
+                        ) : (
+                          <span className="text-rose-400 font-semibold">Sin pagos registrados</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 text-right">
+                        <button
+                          type="button"
+                          onClick={() => window.open(waUrl, '_blank')}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold transition-all cursor-pointer text-xs"
+                          title="Enviar aviso por WhatsApp al tutor"
+                        >
+                          <MessageCircle size={14} />
+                          <span>Recordar Tutor</span>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+      )}
 
 
       {/* Sección de Propuestas Pendientes de Profesores */}

@@ -321,6 +321,16 @@ function Login() {
                 </button>
               </div>
             </div>
+
+            <div className="pt-3 border-t border-white/10 text-center">
+              <Link
+                to="/alumno/login"
+                className="inline-flex items-center gap-2 text-xs font-bold text-purple-300 hover:text-white transition-all py-2 px-3.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 shadow-sm"
+              >
+                <span>👨‍👩‍👧 ¿Eres Padre de Familia o Alumno?</span>
+                <span className="text-purple-200 underline">Ingresa a tu Portal aquí →</span>
+              </Link>
+            </div>
           </form>
         </div>
 

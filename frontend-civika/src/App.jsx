@@ -25,6 +25,7 @@ import VentaUniformes from './pages/VentaUniformes';
 import CorteCaja from './pages/CorteCaja';
 import CortesDireccion from './pages/CortesDireccion';
 import AvisosEscolares from './pages/AvisosEscolares';
+import CuentasSecretarias from './pages/CuentasSecretarias';
 
 // Alumno pages
 import AlumnoLogin from './pages/alumno/AlumnoLogin';
@@ -68,6 +69,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cortes-direccion" element={<CortesDireccion />} />
           <Route path="/avisos-escolares" element={<AvisosEscolares />} />
+          <Route path="/secretarias" element={<CuentasSecretarias />} />
           <Route path="/instructores" element={<Instructores />} />
           <Route path="/talleres" element={<Talleres />} />
           <Route path="/inscripciones" element={<Inscripciones />} />

@@ -137,4 +137,57 @@ export class CivikaController {
   async getStats() {
     return this.civikaService.getStatsCivika();
   }
+
+  // ================= GESTIÓN DE PERSONAL / SECRETARÍAS (DIRECCIÓN) =================
+  @Get('personal')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async getPersonal() {
+    return this.civikaService.getPersonalSecretarias();
+  }
+
+  @Post('personal')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async createPersonal(
+    @Body()
+    body: {
+      nombre: string;
+      email: string;
+      password: string;
+      rol?: string;
+    },
+  ) {
+    return this.civikaService.createSecretaria(body);
+  }
+
+  @Patch('personal/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async updatePersonal(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      nombre?: string;
+      email?: string;
+      password?: string;
+      rol?: string;
+    },
+  ) {
+    return this.civikaService.updateSecretaria(Number(id), body);
+  }
+
+  @Patch('personal/:id/toggle-bloqueo')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async toggleBloqueoPersonal(@Param('id') id: string) {
+    return this.civikaService.toggleBloqueoSecretaria(Number(id));
+  }
+
+  @Delete('personal/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async deletePersonal(@Param('id') id: string) {
+    return this.civikaService.deleteSecretaria(Number(id));
+  }
 }

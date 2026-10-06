@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Modal from '../components/Modal';
-import { CreditCard, Plus, Trash2, Search, Calendar, User, AlertCircle, FileSpreadsheet, BellRing, FileText, CheckCircle2 } from 'lucide-react';
+import { CreditCard, Plus, Trash2, Search, Calendar, User, AlertCircle, FileSpreadsheet, BellRing, FileText, CheckCircle2, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useSocket from '../hooks/useSocket';
 import { generarReciboOficialPDF } from '../utils/receiptGenerator';
@@ -308,6 +308,21 @@ function Pagos() {
                           title="Descargar Recibo Membretado Oficial (PDF con QR de validación)"
                         >
                           <FileText size={18} />
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const tel = p.alumno?.telefonoTutor || p.alumno?.telefono || '';
+                            const cleanTel = tel.replace(/\D/g, '');
+                            const alumnoNombre = p.alumno ? `${p.alumno.nombre} ${p.alumno.apellidoPaterno || ''}`.trim() : 'el alumno';
+                            const msg = `*Colegio Cívika* 🎓\nEstimado tutor de *${alumnoNombre}*:\nConfirmamos la recepción de su pago de colegiatura mensual:\n• Folio: REC-${new Date(p.fechaPago || Date.now()).getFullYear()}-${String(p.id).padStart(5, '0')}\n• Mes: ${p.mesCorrespondiente}\n• Monto: $${Number(p.monto).toFixed(2)} MXN\n• Fecha: ${p.fechaPago ? new Date(p.fechaPago).toLocaleDateString('es-MX') : 'Hoy'}\n\n¡Muchas gracias por su puntualidad!`;
+                            const url = cleanTel ? `https://api.whatsapp.com/send?phone=52${cleanTel}&text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+                            window.open(url, '_blank');
+                          }}
+                          className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/20 rounded-xl transition-all cursor-pointer"
+                          title="Compartir comprobante vía WhatsApp con el tutor"
+                        >
+                          <MessageCircle size={18} />
                         </button>
                         <button 
                           type="button"
