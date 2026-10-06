@@ -2,8 +2,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Alumnos from './pages/Alumnos';
-import Instructores from './pages/Instructores';
-import Talleres from './pages/Talleres';
 import Inscripciones from './pages/Inscripciones';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -16,7 +14,6 @@ import MisGrupos from './pages/MisGrupos';
 import Asistencia from './pages/Asistencia';
 import EventosProfesor from './pages/EventosProfesor';
 import MiPerfil from './pages/MiPerfil';
-import ServicioSocial from './pages/ServicioSocial';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -70,11 +67,8 @@ function App() {
           <Route path="/cortes-direccion" element={<CortesDireccion />} />
           <Route path="/avisos-escolares" element={<AvisosEscolares />} />
           <Route path="/secretarias" element={<CuentasSecretarias />} />
-          <Route path="/instructores" element={<Instructores />} />
-          <Route path="/talleres" element={<Talleres />} />
           <Route path="/inscripciones" element={<Inscripciones />} />
           <Route path="/reportes" element={<Reportes />} />
-          <Route path="/servicio-social" element={<ServicioSocial />} />
           <Route path="/eventos" element={<EventosProfesor />} />
         </Route>
       </Route>

@@ -60,17 +60,7 @@ const REPORTS = [
     badge: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
     desc: 'Lista completa de alumnos, talleres en que participan y estatus de inscripción.',
   },
-  {
-    id: 'talleres',
-    title: 'Talleres e Instructores',
-    subtitle: 'Capacidad, costos y personal',
-    icon: BookOpen,
-    gradient: 'from-cyan-600 to-blue-700',
-    ring: 'ring-cyan-500/30',
-    glow: '0 0 30px rgba(6,182,212,0.25)',
-    badge: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-    desc: 'Información de cada taller: cupo, alumnos inscritos, costo mensual e instructor asignado.',
-  },
+
   {
     id: 'actividades',
     title: 'Reporte de Actividades',
@@ -617,10 +607,7 @@ export default function Reportes() {
   /* ── KPI bar ── */
   const kpis = data ? [
     { label: 'Alumnos',      val: data.resumen.totalAlumnos },
-    { label: 'Talleres',     val: data.resumen.totalTalleres },
-    { label: 'Instructores', val: data.resumen.totalInstructores },
     { label: 'Ingresos',     val: fmt(data.resumen.ingresosTotales) },
-    { label: 'Actividades',  val: data.resumen.totalActividades },
   ] : [];
 
   if (loading) return (
@@ -1114,10 +1101,9 @@ function PrintAlumnos({ data: d }) {
       </div>
 
       <TablaPrint
-        headers={['#', 'Nombre completo', 'CURP', 'Teléfono', 'Talleres', 'Estatus']}
+        headers={['#', 'Nombre completo', 'CURP', 'Teléfono', 'Estatus']}
         rows={d.alumnos.map((a, i) => [
           i + 1, a.nombre, a.curp, a.telefono,
-          a.talleres.join(', ') || 'Sin taller',
           a.activo ? 'Activo' : 'Inactivo',
         ])}
       />
@@ -1127,37 +1113,7 @@ function PrintAlumnos({ data: d }) {
   );
 }
 
-/* ── Talleres e Instructores ── */
-function PrintTalleres({ data: d }) {
-  return (
-    <PrintPage>
-      <PrintHeader titulo="REPORTE DE TALLERES E INSTRUCTORES" asunto="Información de Talleres y Personal Docente" />
-      <p className="text-xs text-neutral-700 leading-relaxed text-justify indent-4 pt-1 font-sans">
-        A continuación se detalla la información de los talleres activos y el personal docente de Colegio Cívika al {hoy()}.
-      </p>
 
-      <h3 className="font-black text-[#801D38] uppercase tracking-widest text-[9px] mb-1 mt-3">Talleres</h3>
-      <TablaPrint
-        headers={['Taller', 'Instructor', 'Inscritos', 'Cupo Máx.', 'Disponible', 'Costo Mens.', 'Horario']}
-        rows={d.talleres.map(t => [
-          t.taller, t.instructor, t.inscritos, t.cupoMaximo,
-          t.cupoMaximo - t.inscritos, fmt(t.costo), t.horario,
-        ])}
-      />
-
-      <div className="mt-3" />
-      <h3 className="font-black text-[#801D38] uppercase tracking-widest text-[9px] mb-1 mt-2">Instructores</h3>
-      <TablaPrint
-        headers={['Nombre', 'Taller Asignado', 'Email', 'Teléfono', 'Estado']}
-        rows={d.instructores.map(i => [
-          i.nombre, i.taller, i.email, i.telefono, i.estado,
-        ])}
-      />
-
-      <PrintSignOff />
-    </PrintPage>
-  );
-}
 
 /* ── Actividades ── */
 function PrintActividades({ data: d }) {
